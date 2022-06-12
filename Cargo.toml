@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 enum_derive = "0.1"
 custom_derive = "0.1"
+object = { version = "0.28", features = ["write"] }

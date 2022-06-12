@@ -1,9 +1,8 @@
 // aron (c) Nikolas Wipper 2022
 
-use crate::instructions::{Instruction, Opcode};
-use crate::instructions::AddressingMode::Qword;
-use crate::parse::{Line, ParseError};
 use crate::parse::lexer::Lexer;
+use crate::parse::{BuildVersion, Directive, Line, ParseError};
+use crate::parse::encodings::matches;
 
 fn parse_directive(mut tokens: Vec<String>) -> Result<Line, ParseError> {
     tokens.remove(0);
@@ -11,7 +10,58 @@ fn parse_directive(mut tokens: Vec<String>) -> Result<Line, ParseError> {
     if tokens.is_empty() {
         Err(ParseError::UnexpectedLB)
     } else {
-        Ok(Line::Directive(tokens))
+        let mut iter = tokens.into_iter();
+        let first = iter.next();
+        if first.is_none() {
+            return Err(ParseError::UnexpectedLB);
+        }
+
+        match first.unwrap().as_str() {
+            "globl" => {
+                let name = iter.next();
+
+                if let Some(name) = name {
+                    Ok(Line::Directive(Directive::Global(name)))
+                } else {
+                    Err(ParseError::UnexpectedLB)
+                }
+            }
+            "build_version" => {
+                let os = iter.next();
+
+                if let Some(os) = os {
+                    match os.as_str() {
+                        "macos" => {
+                            if iter.next().unwrap() != "," { return Err(ParseError::UnexpectedLB); }
+
+                            let major = iter.next();
+                            if major.is_none() { return Err(ParseError::UnexpectedLB); }
+                            let major = major.unwrap().parse::<u16>().map_err(|_| ParseError::InvalidDirective)?;
+
+                            if iter.next().unwrap() != "," { return Err(ParseError::UnexpectedLB); }
+
+                            let minor = iter.next();
+                            if minor.is_none() { return Err(ParseError::UnexpectedLB); }
+                            let minor = minor.unwrap().parse::<u16>().map_err(|_| ParseError::InvalidDirective)?;
+
+                            Ok(Line::Directive(Directive::BuildVersion(BuildVersion::MacOS {major, minor})))
+                        }
+                        // Todo: other operating systems
+                        //  This is an easy fix; compile test.c on other OS's and look what
+                        //  .build_version says there
+                        _ => {
+                            Ok(Line::Directive(Directive::BuildVersion(BuildVersion::Unknown(iter.collect()))))
+                        }
+                    }
+                } else {
+                    Err(ParseError::UnexpectedLB)
+                }
+            }
+            // Todo: parse other important directives like section and alignment indicators
+            _ => {
+                Ok(Line::Directive(Directive::Unknown(iter.collect())))
+            }
+        }
     }
 }
 
@@ -29,17 +79,13 @@ fn parse_label(mut tokens: Vec<String>) -> Result<Line, ParseError> {
 
 fn parse_instruction(tokens: Vec<String>) -> Result<Line, ParseError> {
     // todo: instruction prefix (rep, lock)
-    let op = tokens.first().unwrap();
+    let instr = matches(&tokens);
 
-    let opcode = op.parse::<Opcode>();
-
-    if opcode.is_err() {
-        return Err(ParseError::InvalidInstruction);
+    if let Some(instr) = instr {
+        Ok(Line::Instruction(instr))
+    } else {
+        Err(ParseError::InvalidInstruction)
     }
-    let opcode = opcode.unwrap();
-
-    // todo: parse the rest
-    Ok(Line::Instruction(Instruction::new_ocl(opcode, Qword/*todo hardcoded*/)))
 }
 
 fn parse_line(tokens: Vec<String>) -> Result<Line, ParseError> {
@@ -52,7 +98,7 @@ fn parse_line(tokens: Vec<String>) -> Result<Line, ParseError> {
     }
 }
 
-fn parse_lines(code: String) -> Vec<Line> {
+pub fn parse_lines(code: String) -> Vec<Line> {
     let mut lexer = Lexer::new(code);
 
     let mut res = Vec::new();
@@ -75,9 +121,9 @@ fn parse_lines(code: String) -> Vec<Line> {
         }
 
         if !tokens.is_empty() {
-            res.push(parse_line(tokens));
+            res.push(parse_line(tokens).unwrap());
         }
     }
 
-    todo!()
+    res
 }

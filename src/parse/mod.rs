@@ -1,8 +1,9 @@
 // aron-parse (c) Nikolas Wipper 2022
 
-mod parser;
 mod lexer;
+pub mod parser;
 mod tests;
+mod encodings;
 
 use crate::instructions::Instruction;
 
@@ -12,11 +13,26 @@ pub enum ParseError {
     UnexpectedLB,
     InvalidInstruction,
     InvalidOperand,
+    InvalidDirective,
     ExtraneousTokenBeforeLabel,
 }
 
+#[derive(Debug)]
 pub enum Line {
-    Directive(Vec<String>),
+    Directive(Directive),
     Label(String),
-    Instruction(Instruction)
+    Instruction(Instruction),
+}
+
+#[derive(Debug)]
+pub enum Directive {
+    Global(String),
+    BuildVersion(BuildVersion),
+    Unknown(Vec<String>)
+}
+
+#[derive(Debug)]
+pub enum BuildVersion {
+    MacOS{major: u16, minor: u16},
+    Unknown(Vec<String>)
 }

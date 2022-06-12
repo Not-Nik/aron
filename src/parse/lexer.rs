@@ -22,7 +22,7 @@ pub enum TokenType {
     Name,
 }
 
-pub(crate) const OPERATORS: &[&str] = &[".", ":", ",", "[", "]"];
+pub(crate) const OPERATORS: &[&str] = &[".", ":", ",", "+", "-", "[", "]"];
 
 fn starts_operator(c: &str) -> bool {
     for op in OPERATORS {
@@ -105,9 +105,9 @@ impl Lexer {
 
     pub fn read(&mut self) -> Result<String, ParseError> {
         let mut token = String::new();
-        const STOPPERS: &str = " \n#";
+        const STOPPERS: &str = " \t\n#";
 
-        let skippable = |c: char| -> bool { c.is_whitespace() && c != '\n' || c == '#' };
+        let skippable = |c: char| -> bool { (c.is_whitespace() && c != '\n') || c == '\t' || c == '#' };
 
         while skippable(self.get_char_or('\0')) {
             if self.get_char_or('\0') == '#' {

@@ -13,7 +13,7 @@ _main:                                  ## @main
 	mov	rbp, rsp
 	.cfi_def_cfa_register rbp
 	mov	dword ptr [rbp - 4], 0
-	xor	eax, eax
+	mov	eax, 1
 	pop	rbp
 	ret
 	.cfi_endproc
