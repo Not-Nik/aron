@@ -61,7 +61,7 @@ impl Token {
     }
 
     pub fn get_range(&self) -> Range<usize> {
-        (self.pos.pos - self.raw.len() - 1)..(self.pos.pos - 1)
+        (self.pos.pos - self.raw.len())..self.pos.pos
     }
 }
 
@@ -110,7 +110,13 @@ pub struct Lexer {
 
 impl Lexer {
     pub fn new(code: String) -> Lexer {
-        Lexer { code, c: Ok(' '), pos: LexPosition::new() }
+        let char = code.chars().next();
+        let c = if char.is_none() {
+            Err(ParseError::UnexpectedEOF)
+        } else {
+            Ok(char.unwrap())
+        };
+        Lexer { code, c, pos: LexPosition::new() }
     }
 
     fn read_char(&mut self) -> &Result<char, ParseError> {
@@ -129,7 +135,7 @@ impl Lexer {
 
     fn peek_char(&mut self) -> Result<char, ParseError> {
         if self.pos.pos < self.code.len() {
-            let char = self.code[self.pos.pos..].chars().next();
+            let char = self.code[self.pos.pos+1..].chars().next();
             if char.is_none() {
                 Err(ParseError::UnexpectedEOF)
             } else {
@@ -230,7 +236,7 @@ impl Lexer {
         let mut res = String::with_capacity(10);
         let mut read_c = false;
         let mut ch = '\0';
-        'readLoop: while self.get_char_or('\0') != '\0' {
+        'read_loop: while self.get_char_or('\0') != '\0' {
             let peek = self.peek_char();
             if peek.is_ok() && peek.unwrap() == '#' {
                 break;
@@ -239,7 +245,7 @@ impl Lexer {
                 if self.get_char() == *c {
                     read_c = true;
                     ch = *c;
-                    break 'readLoop;
+                    break 'read_loop;
                 }
             }
             if self.get_char() == '\\' {
