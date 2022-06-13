@@ -4,9 +4,10 @@ use std::mem::size_of;
 use std::slice::Iter;
 use std::str::FromStr;
 use crate::instructions::{Mod, Register};
+use crate::parse::lexer::Token;
 use crate::parse::ParseError;
 
-pub fn get_next<'a>(iter: &'a mut Iter<String>) -> Result<&'a String, (usize, ParseError)> {
+pub fn get_next<'a>(iter: &'a mut Iter<Token>) -> Result<&'a Token, (usize, ParseError)> {
     let next = iter.next();
     if next.is_none() {
         return Err((iter.count(), ParseError::UnexpectedLB));
@@ -26,7 +27,7 @@ pub fn get_mod_from_rm(rm: &(Register, Mod, Option<i32>)) -> Mod {
     }
 }
 
-pub fn is_imm_of_size(iter: &mut Iter<String>, size: usize) -> Result<i32, (usize, ParseError)> {
+pub fn is_imm_of_size(iter: &mut Iter<Token>, size: usize) -> Result<i32, (usize, ParseError)> {
     let next = get_next(iter)?;
     let neg = if next == "-" { -1 } else { 1 };
 
@@ -66,7 +67,7 @@ const REGS_32_BIT: [&str; 16] = [
 const REGS_64_BIT: [&str; 16] =
     ["rax", "rbx", "rcx", "rdx", "rsi", "rdi", "rsp", "rbp", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15"];
 
-pub fn is_reg_of_size(iter: &mut Iter<String>, size: usize) -> Result<Register, (usize, ParseError)> {
+pub fn is_reg_of_size(iter: &mut Iter<Token>, size: usize) -> Result<Register, (usize, ParseError)> {
     let reg = get_next(iter)?;
     let works = match size {
         0 => {
@@ -88,7 +89,7 @@ pub fn is_reg_of_size(iter: &mut Iter<String>, size: usize) -> Result<Register, 
     }
 }
 
-pub fn is_rm_of_size(iter: &mut Iter<String>, size: usize) -> Result<(Register, Mod, Option<i32>), (usize, ParseError)> {
+pub fn is_rm_of_size(iter: &mut Iter<Token>, size: usize) -> Result<(Register, Mod, Option<i32>), (usize, ParseError)> {
     let reg_res = is_reg_of_size(&mut iter.clone(), size);
     if let Ok(reg_res) = reg_res {
         iter.next();

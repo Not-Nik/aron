@@ -72,7 +72,6 @@ impl Module {
                             current_function.make_global();
                         }
                     }
-                    Directive::Unknown(_) => {}
                     _ => {}
                 },
                 Line::Label(label) => last_label = label,

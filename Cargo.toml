@@ -6,6 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+ariadne = "0.1"
 enum_derive = "0.1"
 custom_derive = "0.1"
 object = { version = "0.28", features = ["write"] }

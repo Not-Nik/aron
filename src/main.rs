@@ -9,6 +9,7 @@ use std::ffi::OsStr;
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
+use std::process::exit;
 
 mod assembler;
 mod instructions;
@@ -29,12 +30,16 @@ fn main() {
 
         let mut code = String::new();
         file.read_to_string(&mut code).unwrap();
-        let parsed_lines = parse_lines(code);
+        let parsed_lines = parse_lines(arg.clone(), code);
 
-        let module = Module::from_lines(parsed_lines);
+        if let Ok(parsed_lines) = parsed_lines {
+            let module = Module::from_lines(parsed_lines);
 
-        let out_name = Path::new(path.file_stem().unwrap()).with_extension("o");
+            let out_name = Path::new(path.file_stem().unwrap()).with_extension("o");
 
-        module.write_to_file(out_name, ObjectFileType::MachO).expect("Couldn't write module");
+            module.write_to_file(out_name, ObjectFileType::MachO).expect("Couldn't write module");
+        } else {
+            exit(1);
+        }
     }
 }

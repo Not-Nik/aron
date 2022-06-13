@@ -1,19 +1,20 @@
 // aron (c) Nikolas Wipper 2022
 
 use crate::parse::encodings::matches;
-use crate::parse::lexer::Lexer;
+use crate::parse::helpers::get_next;
+use crate::parse::lexer::{Lexer, Token};
 use crate::parse::{BuildVersion, Directive, Line, ParseError};
+use ariadne::{Label, Report, ReportKind, Source};
 
-fn parse_directive(mut tokens: Vec<String>) -> Result<Line, ParseError> {
-    tokens.remove(0);
-
+fn parse_directive(tokens: &Vec<Token>) -> Result<Line, (usize, ParseError)> {
     if tokens.is_empty() {
-        Err(ParseError::UnexpectedLB)
+        Err((0, ParseError::UnexpectedLB))
     } else {
-        let mut iter = tokens.into_iter();
+        let mut iter = tokens.iter();
+        iter.next();
         let first = iter.next();
         if first.is_none() {
-            return Err(ParseError::UnexpectedLB);
+            return Err((iter.count(), ParseError::UnexpectedLB));
         }
 
         match first.unwrap().as_str() {
@@ -21,9 +22,9 @@ fn parse_directive(mut tokens: Vec<String>) -> Result<Line, ParseError> {
                 let name = iter.next();
 
                 if let Some(name) = name {
-                    Ok(Line::Directive(Directive::Global(name)))
+                    Ok(Line::Directive(Directive::Global(name.clone_string())))
                 } else {
-                    Err(ParseError::UnexpectedLB)
+                    Err((iter.count(), ParseError::UnexpectedLB))
                 }
             }
             "build_version" => {
@@ -32,53 +33,58 @@ fn parse_directive(mut tokens: Vec<String>) -> Result<Line, ParseError> {
                 if let Some(os) = os {
                     match os.as_str() {
                         "macos" => {
-                            if iter.next().ok_or(ParseError::UnexpectedLB)? != "," {
-                                return Err(ParseError::InvalidDirective);
+                            if get_next(&mut iter)? != "," {
+                                return Err((iter.count(), ParseError::InvalidDirective));
                             }
 
-                            let major = iter.next().ok_or(ParseError::UnexpectedLB)?.parse::<u16>().map_err(|_| ParseError::InvalidDirective)?;
+                            let major = get_next(&mut iter)?
+                                .parse::<u16>()
+                                .map_err(|_| (iter.clone().count(), ParseError::InvalidDirective))?;
 
-                            if iter.next().ok_or(ParseError::UnexpectedLB)? != "," {
-                                return Err(ParseError::InvalidDirective);
+                            if get_next(&mut iter)? != "," {
+                                return Err((iter.count(), ParseError::InvalidDirective));
                             }
 
-                            let minor = iter.next().ok_or(ParseError::UnexpectedLB)?.parse::<u16>().map_err(|_| ParseError::InvalidDirective)?;
+                            let minor = get_next(&mut iter)?
+                                .parse::<u16>()
+                                .map_err(|_| (iter.clone().count(), ParseError::InvalidDirective))?;
 
                             Ok(Line::Directive(Directive::BuildVersion(BuildVersion::MacOS { major, minor })))
                         }
                         // Todo: other operating systems
                         //  This is an easy fix; compile test.c on other OS's and look what
                         //  .build_version says there
-                        _ => Ok(Line::Directive(Directive::BuildVersion(BuildVersion::Unknown(iter.collect())))),
+                        _ => Ok(Line::Directive(Directive::BuildVersion(BuildVersion::Unknown))),
                     }
                 } else {
-                    Err(ParseError::UnexpectedLB)
+                    Err((iter.count(), ParseError::UnexpectedLB))
                 }
             }
             // Todo: parse other important directives like section and alignment indicators
-            _ => Ok(Line::Directive(Directive::Unknown(iter.collect()))),
+            _ => Ok(Line::Directive(Directive::Unknown)),
         }
     }
 }
 
-fn parse_label(mut tokens: Vec<String>) -> Result<Line, ParseError> {
-    tokens.pop();
-
-    if tokens.is_empty() {
-        Err(ParseError::UnexpectedLB)
-    } else if tokens.len() > 1 {
-        Err(ParseError::ExtraneousTokenBeforeLabel)
+fn parse_label(tokens: &Vec<Token>) -> Result<Line, (usize, ParseError)> {
+    if tokens.len() == 1 {
+        Err((0, ParseError::UnexpectedLB))
     } else {
-        Ok(Line::Label(tokens.first().unwrap().clone()))
+        let label = tokens.get(tokens.len() - 2).unwrap().clone();
+        if tokens.len() > 2 {
+            Err((tokens.len() - 1, ParseError::ExtraneousTokenBeforeLabel(label)))
+        } else {
+            Ok(Line::Label(tokens.first().unwrap().clone_string()))
+        }
     }
 }
 
-fn parse_instruction(tokens: Vec<String>) -> Result<Line, ParseError> {
+fn parse_instruction(tokens: &Vec<Token>) -> Result<Line, (usize, ParseError)> {
     // todo: instruction prefix (rep, lock)
-    Ok(Line::Instruction(matches(&tokens)?))
+    Ok(Line::Instruction(matches(tokens)?))
 }
 
-fn parse_line(tokens: Vec<String>) -> Result<Line, ParseError> {
+fn parse_line(tokens: &Vec<Token>) -> Result<Line, (usize, ParseError)> {
     if tokens.first().unwrap() == "." {
         parse_directive(tokens)
     } else if tokens.last().unwrap() == ":" {
@@ -88,10 +94,10 @@ fn parse_line(tokens: Vec<String>) -> Result<Line, ParseError> {
     }
 }
 
-pub fn parse_lines(code: String) -> Vec<Line> {
-    let mut lexer = Lexer::new(code);
+pub fn parse_lines(file_name: String, code: String) -> Result<Vec<Line>, ()> {
+    let mut lexer = Lexer::new(code.clone());
 
-    let mut res = Vec::new();
+    let mut vec = Vec::new();
 
     'outer_parser: loop {
         let mut tokens = Vec::new();
@@ -111,9 +117,37 @@ pub fn parse_lines(code: String) -> Vec<Line> {
         }
 
         if !tokens.is_empty() {
-            res.push(parse_line(tokens).unwrap());
+            let res = parse_line(&tokens);
+
+            if let Ok(res) = res {
+                vec.push(res);
+            } else if let Err((i, e)) = res {
+                let tok = tokens.remove(tokens.len() - i - 1);
+
+                let mut builder = Report::build(ReportKind::Error, file_name.clone(), tok.get_pos().pos)
+                    .with_code(e.to_code())
+                    .with_message(e.to_string())
+                    .with_label(
+                        Label::new((file_name.clone(), tok.get_range()))
+                            .with_message(format!("'{}' here", tok.as_str())),
+                    );
+
+                match e {
+                    ParseError::ExtraneousTokenBeforeLabel(label) => {
+                        builder = builder.with_label(
+                            Label::new((file_name.clone(), label.get_range()))
+                                .with_message(format!("To label '{}' here", label.as_str())),
+                        );
+                    }
+                    _ => {}
+                }
+
+                builder.finish().eprint((file_name.clone(), Source::from(code))).unwrap();
+
+                return Err(());
+            }
         }
     }
 
-    res
+    Ok(vec)
 }

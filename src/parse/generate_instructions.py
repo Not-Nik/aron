@@ -99,13 +99,14 @@ def main():
     print("""// aron (c) Nikolas Wipper 2022
 
 use crate::instructions::Instruction;
+use crate::parse::lexer::Token;
 use crate::parse::ParseError;
 use crate::parse::helpers::*;""", file=types_header)
     funcs = []
 
     for instruction in instructions:
         print(f"""
-fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<String>) -> Result<Instruction, (usize, ParseError)> {{
+fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {{
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != \"{instruction.name}\" {{ return Err((iter.count(), ParseError::InvalidInstruction)); }}""", file=types_header)
@@ -200,10 +201,10 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<String>) -> Result<In
     func_list = ", ".join(funcs)
 
     print(f"""
-const MATCH_FUNCTIONS: [fn(&Vec<String>) -> Result<Instruction, (usize, ParseError)>; {len(funcs)}] = [{func_list}];
+const MATCH_FUNCTIONS: [fn(&Vec<Token>) -> Result<Instruction, (usize, ParseError)>; {len(funcs)}] = [{func_list}];
 
-pub fn matches(tokens: &Vec<String>) -> Result<Instruction, ParseError> {{
-    let mut err: (usize, ParseError) = (usize::MAX, ParseError::UnexpectedEOF);
+pub fn matches(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {{
+    let mut err: (usize, ParseError) = (tokens.len() - 1, ParseError::InvalidInstruction);
     
     for func in MATCH_FUNCTIONS {{
         let instr = func(tokens);
@@ -217,7 +218,7 @@ pub fn matches(tokens: &Vec<String>) -> Result<Instruction, ParseError> {{
         }}
     }}
     
-    Err(err.1)
+    Err(err)
 }}""", file=types_header)
 
 

@@ -1,17 +1,26 @@
 // aron (c) Nikolas Wipper 2022
 
+use std::ops::Range;
+use std::str::FromStr;
 use crate::parse::ParseError;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct LexPosition {
-    pub line: u32,
-    pub char: u32,
+    pub line: usize,
+    pub char: usize,
+    pub pos: usize
 }
 
 impl LexPosition {
     pub fn new() -> LexPosition {
-        LexPosition { line: 1, char: 0 }
+        LexPosition { line: 1, char: 0, pos: 0 }
     }
+}
+
+#[derive(Clone, Debug)]
+pub struct Token {
+    raw: String,
+    pos: LexPosition
 }
 
 #[derive(Debug, PartialEq)]
@@ -33,54 +42,94 @@ fn starts_operator(c: &str) -> bool {
     false
 }
 
-impl TokenType {
-    pub fn from_token(token: &String) -> TokenType {
-        if token.starts_with('"') {
-            return TokenType::String;
-        }
-        for op in OPERATORS {
-            if *op == token.as_str() {
-                return TokenType::Operator;
-            }
-        }
+impl Token {
+    pub fn as_str(&self) -> &str {
+        self.raw.as_str()
+    }
 
-        // Todo: parse number
-        match token.as_str() {
-            "\n" => TokenType::LineBreak,
-            _ => TokenType::Name,
-        }
+    #[inline]
+    pub fn parse<F: FromStr>(&self) -> Result<F, F::Err> {
+        FromStr::from_str(self.raw.as_str())
+    }
+
+    pub fn clone_string(&self) -> String {
+        self.raw.clone()
+    }
+
+    pub fn get_pos(&self) -> &LexPosition {
+        &self.pos
+    }
+
+    pub fn get_range(&self) -> Range<usize> {
+        (self.pos.pos - self.raw.len() - 1)..(self.pos.pos - 1)
     }
 }
+
+impl Into<String> for Token {
+    fn into(self) -> String {
+        self.raw
+    }
+}
+
+impl PartialEq<String> for Token {
+    fn eq(&self, other: &String) -> bool {
+        self.raw.eq(other)
+    }
+
+    fn ne(&self, other: &String) -> bool {
+        self.raw.ne(other)
+    }
+}
+
+impl PartialEq<str> for Token {
+    fn eq(&self, other: &str) -> bool {
+        self.raw.eq(other)
+    }
+
+    fn ne(&self, other: &str) -> bool {
+        self.raw.ne(other)
+    }
+}
+
+impl PartialEq<&str> for Token {
+    fn eq(&self, other: &&str) -> bool {
+        self.raw.eq(other)
+    }
+
+    fn ne(&self, other: &&str) -> bool {
+        self.raw.ne(other)
+    }
+}
+
 
 pub struct Lexer {
     code: String,
     c: Result<char, ParseError>,
-    pub pos: usize,
-    pretty_pos: LexPosition,
+    pos: LexPosition,
 }
 
 impl Lexer {
     pub fn new(code: String) -> Lexer {
-        Lexer { code, c: Ok(' '), pos: 0, pretty_pos: LexPosition::new() }
+        Lexer { code, c: Ok(' '), pos: LexPosition::new() }
     }
 
     fn read_char(&mut self) -> &Result<char, ParseError> {
         self.c = self.peek_char();
         if self.c.is_ok() {
-            self.pos += 1;
+            self.pos.pos += 1;
             if self.c.as_ref().unwrap() == &'\n' {
-                self.pretty_pos.line += 1;
-                self.pretty_pos.char = 0;
+                self.pos.line += 1;
+                self.pos.char = 0;
             } else {
-                self.pretty_pos.char += 1;
+                self.pos.char += 1;
             }
         }
         &self.c
     }
 
     fn peek_char(&mut self) -> Result<char, ParseError> {
-        if self.pos < self.code.len() {
-            let char = self.code[self.pos..].chars().next();
+        if self.pos.pos < self.code.len() {
+            let char = self.code[self.pos.pos..].chars().next();
             if char.is_none() {
                 Err(ParseError::UnexpectedEOF)
             } else {
@@ -103,7 +152,7 @@ impl Lexer {
         *self.get_last_char().unwrap()
     }
 
-    pub fn read(&mut self) -> Result<String, ParseError> {
+    pub fn read(&mut self) -> Result<Token, ParseError> {
         let mut token = String::new();
         const STOPPERS: &str = " \t\n#";
 
@@ -147,21 +196,6 @@ impl Lexer {
                     }
                     break;
                 } else if starts_operator(char.to_string().as_str()) {
-                    if char == '$' && self.peek_char().is_ok() && self.peek_char().unwrap() == '(' {
-                        self.read_char();
-                        self.read_char();
-                        token = String::from("$(");
-                        let name = self.read();
-                        if name.is_err() {
-                            break;
-                        }
-                        token.push_str(name.unwrap().as_str());
-                        if self.get_char_or('\0') == ')' {
-                            token.push(')');
-                        }
-                        break;
-                    }
-
                     if token.is_empty() {
                         token = char.to_string();
                         op = true;
@@ -186,7 +220,10 @@ impl Lexer {
             }
         }
 
-        Ok(token)
+        Ok(Token {
+            raw: token,
+            pos: self.pos
+        })
     }
 
     fn read_line_until(&mut self, chars: Vec<char>) -> (String, bool, char) {
@@ -212,7 +249,7 @@ impl Lexer {
                     self.read().unwrap();
                 }
             } else {
-                if self.peek_char() == Ok('\n') {
+                if self.peek_char().unwrap_or('\0') == '\n' {
                     break;
                 }
                 res.push(self.get_char());
