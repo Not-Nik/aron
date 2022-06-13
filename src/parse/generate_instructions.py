@@ -140,7 +140,7 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<Token>) -> Result<Ins
             else:
                 raise RuntimeError("Unsupported op type '" + op.raw + "'")
 
-        print(f"""    if iter.next().is_some() {{ return Err((iter.count() + 1, ParseError::ExtraneousTokenAfterInstruction)); }}
+        print(f"""    if iter.next().is_some() {{ return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }}
     let mut instr = Instruction::new("{instruction.name}".to_string());""", file=types_header)
 
         if rm:
