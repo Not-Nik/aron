@@ -1,8 +1,8 @@
 // aron (c) Nikolas Wipper 2022
 
+use crate::parse::encodings::matches;
 use crate::parse::lexer::Lexer;
 use crate::parse::{BuildVersion, Directive, Line, ParseError};
-use crate::parse::encodings::matches;
 
 fn parse_directive(mut tokens: Vec<String>) -> Result<Line, ParseError> {
     tokens.remove(0);
@@ -32,35 +32,31 @@ fn parse_directive(mut tokens: Vec<String>) -> Result<Line, ParseError> {
                 if let Some(os) = os {
                     match os.as_str() {
                         "macos" => {
-                            if iter.next().unwrap() != "," { return Err(ParseError::UnexpectedLB); }
+                            if iter.next().ok_or(ParseError::UnexpectedLB)? != "," {
+                                return Err(ParseError::InvalidDirective);
+                            }
 
-                            let major = iter.next();
-                            if major.is_none() { return Err(ParseError::UnexpectedLB); }
-                            let major = major.unwrap().parse::<u16>().map_err(|_| ParseError::InvalidDirective)?;
+                            let major = iter.next().ok_or(ParseError::UnexpectedLB)?.parse::<u16>().map_err(|_| ParseError::InvalidDirective)?;
 
-                            if iter.next().unwrap() != "," { return Err(ParseError::UnexpectedLB); }
+                            if iter.next().ok_or(ParseError::UnexpectedLB)? != "," {
+                                return Err(ParseError::InvalidDirective);
+                            }
 
-                            let minor = iter.next();
-                            if minor.is_none() { return Err(ParseError::UnexpectedLB); }
-                            let minor = minor.unwrap().parse::<u16>().map_err(|_| ParseError::InvalidDirective)?;
+                            let minor = iter.next().ok_or(ParseError::UnexpectedLB)?.parse::<u16>().map_err(|_| ParseError::InvalidDirective)?;
 
-                            Ok(Line::Directive(Directive::BuildVersion(BuildVersion::MacOS {major, minor})))
+                            Ok(Line::Directive(Directive::BuildVersion(BuildVersion::MacOS { major, minor })))
                         }
                         // Todo: other operating systems
                         //  This is an easy fix; compile test.c on other OS's and look what
                         //  .build_version says there
-                        _ => {
-                            Ok(Line::Directive(Directive::BuildVersion(BuildVersion::Unknown(iter.collect()))))
-                        }
+                        _ => Ok(Line::Directive(Directive::BuildVersion(BuildVersion::Unknown(iter.collect())))),
                     }
                 } else {
                     Err(ParseError::UnexpectedLB)
                 }
             }
             // Todo: parse other important directives like section and alignment indicators
-            _ => {
-                Ok(Line::Directive(Directive::Unknown(iter.collect())))
-            }
+            _ => Ok(Line::Directive(Directive::Unknown(iter.collect()))),
         }
     }
 }
@@ -79,13 +75,7 @@ fn parse_label(mut tokens: Vec<String>) -> Result<Line, ParseError> {
 
 fn parse_instruction(tokens: Vec<String>) -> Result<Line, ParseError> {
     // todo: instruction prefix (rep, lock)
-    let instr = matches(&tokens);
-
-    if let Some(instr) = instr {
-        Ok(Line::Instruction(instr))
-    } else {
-        Err(ParseError::InvalidInstruction)
-    }
+    Ok(Line::Instruction(matches(&tokens)?))
 }
 
 fn parse_line(tokens: Vec<String>) -> Result<Line, ParseError> {

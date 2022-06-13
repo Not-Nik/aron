@@ -4,6 +4,7 @@ mod lexer;
 pub mod parser;
 mod tests;
 mod encodings;
+mod helpers;
 
 use crate::instructions::Instruction;
 
@@ -15,6 +16,7 @@ pub enum ParseError {
     InvalidOperand,
     InvalidDirective,
     ExtraneousTokenBeforeLabel,
+    ExtraneousTokenAfterInstruction,
 }
 
 #[derive(Debug)]

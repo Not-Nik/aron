@@ -1,3 +1,7 @@
+# This script generates a very naive matching algorithm, where, instead of intelligently parsing a line, with several
+# branches, every possible instruction is brute-forced and the first one to not return an error is used.
+# Todo: return the instruction that uses the least bytes
+
 import re
 import csv
 
@@ -94,115 +98,17 @@ def main():
 
     print("""// aron (c) Nikolas Wipper 2022
 
-use std::mem::size_of;
-use std::slice::Iter;
-use std::str::FromStr;
-use crate::instructions::{Instruction, Mod, Register};
-use crate::instructions::Mod::*;
-    
-fn is_imm_of_size(iter: &mut Iter<String>, size: usize) -> Option<i32> {
-    let next = iter.next().unwrap();
-    let neg = if next == "-" { -1 } else { 1 };
-    
-    let num = if next == "-" { iter.next().unwrap().parse::<isize>() } else { next.parse::<isize>() };
-    if let Ok(num) = num {
-        if (size_of::<usize>() * 8 - num.leading_zeros() as usize) <= size {
-            Some(num as i32 * neg)
-        } else {
-            None
-        }
-    } else {
-        None
-    }
-}
-
-const REGS_8_BIT: [&str; 20] = [
-    "al", "ah", "bl", "bh", "cl", "ch", "dl", "dh", "sil", "dil", "spl", "bpl", "r8b", "r9b", "r10b", "r11b", "r12b",
-    "r13b", "r14b", "r15b",
-];
-
-const REGS_16_BIT: [&str; 16] =
-    ["ax", "bx", "cx", "dx", "si", "di", "sp", "bp", "r8w", "r9w", "r10w", "r11w", "r12w", "r13w", "r14w", "r15w"];
-
-const REGS_32_BIT: [&str; 16] = [
-    "eax", "ebx", "ecx", "edx", "esi", "edi", "esp", "ebp", "r8d", "r9d", "r10d", "r11d", "r12d", "r13d", "r14d",
-    "r15d",
-];
-
-const REGS_64_BIT: [&str; 16] =
-    ["rax", "rbx", "rcx", "rdx", "rsi", "rdi", "rsp", "rbp", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15"];
-
-fn is_reg_of_size(iter: &mut Iter<String>, size: usize) -> Option<Register> {
-    let reg = iter.next().unwrap();
-    let works = match size {
-        0 => {
-            REGS_8_BIT.contains(&reg.as_str())
-                || REGS_16_BIT.contains(&reg.as_str())
-                || REGS_32_BIT.contains(&reg.as_str())
-                || REGS_64_BIT.contains(&reg.as_str())
-        }
-        8 => REGS_8_BIT.contains(&reg.as_str()),
-        16 => REGS_16_BIT.contains(&reg.as_str()),
-        32 => REGS_32_BIT.contains(&reg.as_str()),
-        64 => REGS_64_BIT.contains(&reg.as_str()),
-        _ => panic!("Invalid size"),
-    };
-    if works {
-        Some(Register::from_str(reg.as_str()).unwrap())
-    } else {
-        None
-    }
-}
-
-fn is_rm_of_size(iter: &mut Iter<String>, size: usize) -> Option<(Register, Mod, Option<i32>)> {
-    let reg_res = is_reg_of_size(&mut iter.clone(), size);
-    if let Some(reg_res) = reg_res {
-        iter.next();
-        return Some((reg_res, NoDereference, None));
-    }
-    
-    let next = iter.next().unwrap();
-    if match size {
-        8 => next != "byte",
-        16 => next != "word",
-        32 => next != "dword",
-        64 => next != "qword",
-        _ => panic!("Invalid size"),
-    } { return None; }
-    if iter.next().unwrap() != "ptr" { return None; }
-    if iter.next().unwrap() != "[" { return None; }
-    let reg_res = is_reg_of_size(iter, 0);
-    if reg_res.is_none() { return None; }
-    
-    let next = iter.next().unwrap();
-    let mod_byte: Mod;
-    let mut off: Option<i32> = None;
-    
-    if ["+", "-"].contains(&next.as_str()) {
-        let off_res = is_imm_of_size(iter, 32);
-        if let Some(off_res) = off_res {
-            off = Some(off_res * if next.as_str() == "-" { -1 } else { 1 })
-        } else {
-            return None;
-        }
-        if iter.next().unwrap() != "]" { return None; }
-        
-        mod_byte = Offset32Bit;
-    } else if next != "]" {
-        return None;
-    } else {
-        mod_byte = NoOffset;
-    }
-    return Some((reg_res.unwrap(), mod_byte, off));
-}""", file=types_header)
+use crate::instructions::Instruction;
+use crate::parse::ParseError;
+use crate::parse::helpers::*;""", file=types_header)
     funcs = []
 
     for instruction in instructions:
         print(f"""
-fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<String>) -> Option<Instruction> {{
+fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<String>) -> Result<Instruction, (usize, ParseError)> {{
     let mut iter = tokens.iter();
     
-    if iter.next().unwrap() != \"{instruction.name}\" {{ return None; }}""", file=types_header)
+    if get_next(&mut iter)? != \"{instruction.name}\" {{ return Err((iter.count(), ParseError::InvalidInstruction)); }}""", file=types_header)
 
         funcs.append(f"matches_{instruction.name}{len(funcs) + 1}")
 
@@ -215,44 +121,29 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<String>) -> Option<In
                 continue
 
             if op == instruction.op2:
-                print("    if iter.next().unwrap() != \",\" { return None; }", file=types_header)
+                print("""    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }""", file=types_header)
 
             # todo: some instructions have two immediate values
             # todo: some instructions have two regs
             if op.is_imm():
-                print(f"""    let imm = is_imm_of_size(&mut iter, {op.get_imm_size()});
-    if imm.is_none() {{ return None; }}
-    let imm = imm.unwrap();""", file=types_header)
+                print(f"""    let imm = is_imm_of_size(&mut iter, {op.get_imm_size()})?;""", file=types_header)
                 imm = op
             elif op.is_specific_operand():
-                print(f"    if iter.next().unwrap() != \"{op.raw}\" {{ return None; }}", file=types_header)
+                print(f"""    if get_next(&mut iter)? != "{op.raw}" {{ return Err((iter.count(), ParseError::InvalidOperand)); }}""", file=types_header)
             elif op.is_unspecific_reg():
-                print(f"""    let reg = is_reg_of_size(&mut iter, {op.get_reg_size()});
-    if reg.is_none() {{ return None; }}
-    let reg = reg.unwrap();""", file=types_header)
+                print(f"""    let reg = is_reg_of_size(&mut iter, {op.get_reg_size()})?;""", file=types_header)
                 reg = True
             elif op.is_unspecific_rm():
-                print(f"""    let rm = is_rm_of_size(&mut iter, {op.get_rm_size()});
-    if rm.is_none() {{ return None; }}
-    let rm = rm.unwrap();""", file=types_header)
+                print(f"""    let rm = is_rm_of_size(&mut iter, {op.get_rm_size()})?;""", file=types_header)
                 rm = True
             else:
                 raise RuntimeError("Unsupported op type '" + op.raw + "'")
 
-        print(f"""    if iter.next().is_some() {{ return None; }}
+        print(f"""    if iter.next().is_some() {{ return Err((iter.count() + 1, ParseError::ExtraneousTokenAfterInstruction)); }}
     let mut instr = Instruction::new("{instruction.name}".to_string());""", file=types_header)
 
         if rm:
-            print("""
-    let m = if let Some(off) = rm.2 {
-        if off < 128 && off > -128 {
-            Offset8Bit
-        } else {
-            Offset32Bit
-        }
-    } else {
-        rm.1
-    };""", file=types_header)
+            print("\n    let m = get_mod_from_rm(&rm);", file=types_header)
 
         opcode = instruction.opcode \
             .replace("REX +", "REX") \
@@ -296,35 +187,38 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<String>) -> Option<In
                 print(f"    instr.write_byte(0x{part});", file=types_header)
 
         if rm == "rm.0":
-            print(f"    instr.write_mod(m, {rm} as u8, {reg} as u8);", file=types_header)
-
-            print("""
-    if let Some(off) = rm.2 {
-        if m == Offset32Bit {
-            instr.write_num(off);
-        } else if m == Offset8Bit {
-            instr.write_num(off as i8);
-        }
-    }""", file=types_header)
+            print(f"    instr.write_offset(m, rm.0 as u8, {reg} as u8, rm.2);", file=types_header)
 
         if imm_write:
             print(imm_write, file=types_header)
 
         print("""
-    Some(instr)""", file=types_header)
+    Ok(instr)""", file=types_header)
 
         print("}", file=types_header)
 
-    print("""
-pub fn matches(tokens: &Vec<String>) -> Option<Instruction> {""", file=types_header)
+    func_list = ", ".join(funcs)
 
-    func_calls = []
-    for func in funcs:
-        func_calls.append(f"if let Some(instr) = {func}(tokens) {{ Some(instr) }}\n")
+    print(f"""
+const MATCH_FUNCTIONS: [fn(&Vec<String>) -> Result<Instruction, (usize, ParseError)>; {len(funcs)}] = [{func_list}];
 
-    print("    " + "    else ".join(func_calls), file=types_header, end="")
-    print("""    else { None }
-}""", file=types_header)
+pub fn matches(tokens: &Vec<String>) -> Result<Instruction, ParseError> {{
+    let mut err: (usize, ParseError) = (usize::MAX, ParseError::UnexpectedEOF);
+    
+    for func in MATCH_FUNCTIONS {{
+        let instr = func(tokens);
+        if instr.is_ok() {{
+            return Ok(instr.unwrap());
+        }} else {{
+            let instr_err = instr.unwrap_err();
+            if instr_err.0 < err.0 {{
+                err = instr_err;
+            }}
+        }}
+    }}
+    
+    Err(err.1)
+}}""", file=types_header)
 
 
 if __name__ == "__main__":
