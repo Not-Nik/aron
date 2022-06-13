@@ -12,10 +12,18 @@ _main:                                  ## @main
 	.cfi_offset rbp, -16
 	mov	rbp, rsp
 	.cfi_def_cfa_register rbp
+	sub	rsp, 16
 	mov	dword ptr [rbp - 4], 0
-	mov	eax, 1
+	lea	rdi, [rip + L_.str]
+	call	_puts
+	xor	eax, eax
+	add	rsp, 16
 	pop	rbp
 	ret
 	.cfi_endproc
                                         ## -- End function
+	.section	__TEXT,__cstring,cstring_literals
+L_.str:                                 ## @.str
+	.asciz	"Hello World"
+
 .subsections_via_symbols

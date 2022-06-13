@@ -98,6 +98,7 @@ pub fn parse_lines(file_name: String, code: String) -> Result<Vec<Line>, ()> {
     let mut lexer = Lexer::new(code.clone());
 
     let mut vec = Vec::new();
+    let mut is_ok = true;
 
     'outer_parser: loop {
         let mut tokens = Vec::new();
@@ -142,12 +143,16 @@ pub fn parse_lines(file_name: String, code: String) -> Result<Vec<Line>, ()> {
                     _ => {}
                 }
 
-                builder.finish().eprint((file_name.clone(), Source::from(code))).unwrap();
+                builder.finish().eprint((file_name.clone(), Source::from(code.clone()))).unwrap();
 
-                return Err(());
+                is_ok = true;
             }
         }
     }
 
-    Ok(vec)
+    if is_ok {
+        Ok(vec)
+    } else {
+        Err(())
+    }
 }
