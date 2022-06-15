@@ -39,7 +39,7 @@ fn main() {
 
             let out_name = path.with_extension("o");
 
-            module.write_to_file(out_name, ObjectFileType::MachO).expect("Couldn't write module");
+            module.write_to_file(out_name, ObjectFileType::Elf).expect("Couldn't write module");
         } else {
             exit(1);
         }

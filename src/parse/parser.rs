@@ -11,14 +11,13 @@ fn parse_directive(tokens: &Vec<Token>) -> Result<Line, (usize, ParseError)> {
         Err((0, ParseError::UnexpectedLB))
     } else {
         let mut iter = tokens.iter();
-        iter.next();
         let first = iter.next();
         if first.is_none() {
             return Err((iter.count(), ParseError::UnexpectedLB));
         }
 
         match first.unwrap().as_str() {
-            "globl" => {
+            ".globl" => {
                 let name = iter.next();
 
                 if let Some(name) = name {
@@ -27,7 +26,7 @@ fn parse_directive(tokens: &Vec<Token>) -> Result<Line, (usize, ParseError)> {
                     Err((iter.count(), ParseError::UnexpectedLB))
                 }
             }
-            "build_version" => {
+            ".build_version" => {
                 let os = iter.next();
 
                 if let Some(os) = os {
@@ -85,7 +84,7 @@ fn parse_instruction(tokens: &Vec<Token>) -> Result<Line, (usize, ParseError)> {
 }
 
 fn parse_line(tokens: &Vec<Token>) -> Result<Line, (usize, ParseError)> {
-    if tokens.first().unwrap() == "." {
+    if tokens.first().unwrap().as_str().starts_with('.') {
         parse_directive(tokens)
     } else if tokens.last().unwrap() == ":" {
         parse_label(tokens)
@@ -145,7 +144,7 @@ pub fn parse_lines(file_name: String, code: String) -> Result<Vec<Line>, ()> {
 
                 builder.finish().eprint((file_name.clone(), Source::from(code.clone()))).unwrap();
 
-                is_ok = true;
+                is_ok = false;
             }
         }
     }

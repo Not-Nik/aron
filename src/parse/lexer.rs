@@ -23,15 +23,13 @@ pub struct Token {
     pos: LexPosition
 }
 
-#[derive(Debug, PartialEq)]
-pub enum TokenType {
-    Operator,
-    LineBreak,
-    String,
-    Name,
-}
+pub(crate) const OPERATORS: &[&str] = &[":", ",", "+", "-", "[", "]"];
 
-pub(crate) const OPERATORS: &[&str] = &[".", ":", ",", "+", "-", "[", "]"];
+pub struct Lexer {
+    code: String,
+    c: Result<char, ParseError>,
+    pos: LexPosition,
+}
 
 fn starts_operator(c: &str) -> bool {
     for op in OPERATORS {
@@ -106,13 +104,6 @@ impl PartialEq<&str> for Token {
     fn ne(&self, other: &&str) -> bool {
         self.raw.ne(other)
     }
-}
-
-
-pub struct Lexer {
-    code: String,
-    c: Result<char, ParseError>,
-    pos: LexPosition,
 }
 
 impl Lexer {

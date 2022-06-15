@@ -1,6 +1,6 @@
 // aron (c) Nikolas Wipper 2022
 
-use crate::instructions::Instruction;
+use crate::instructions::{Instruction, Mod};
 use crate::parse::lexer::Token;
 use crate::parse::ParseError;
 use crate::parse::helpers::*;
@@ -10132,6 +10132,7 @@ fn matches_rdfsbase647(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     instr.write_byte(0xF3);
     instr.write_byte(0x0F);
     instr.write_byte(0xAE);
+    instr.write_offset(Mod::NoDereference, reg as u8, 0, None);
 
     Ok(instr)
 }
@@ -10147,6 +10148,7 @@ fn matches_rdfsbase648(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     instr.write_rex(true, 0 as u8, reg as u8);
     instr.write_byte(0x0F);
     instr.write_byte(0xAE);
+    instr.write_offset(Mod::NoDereference, reg as u8, 0, None);
 
     Ok(instr)
 }
@@ -10161,6 +10163,7 @@ fn matches_rdgsbase649(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     instr.write_byte(0xF3);
     instr.write_byte(0x0F);
     instr.write_byte(0xAE);
+    instr.write_offset(Mod::NoDereference, reg as u8, 1, None);
 
     Ok(instr)
 }
@@ -10176,6 +10179,7 @@ fn matches_rdgsbase650(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     instr.write_rex(true, 0 as u8, reg as u8);
     instr.write_byte(0x0F);
     instr.write_byte(0xAE);
+    instr.write_offset(Mod::NoDereference, reg as u8, 1, None);
 
     Ok(instr)
 }
@@ -10202,6 +10206,7 @@ fn matches_rdpid652(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     instr.write_byte(0xF3);
     instr.write_byte(0x0F);
     instr.write_byte(0xC7);
+    instr.write_offset(Mod::NoDereference, reg as u8, 7, None);
 
     Ok(instr)
 }
@@ -10216,6 +10221,7 @@ fn matches_rdpid653(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     instr.write_byte(0xF3);
     instr.write_byte(0x0F);
     instr.write_byte(0xC7);
+    instr.write_offset(Mod::NoDereference, reg as u8, 7, None);
 
     Ok(instr)
 }
@@ -10241,6 +10247,7 @@ fn matches_rdrand655(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     let mut instr = Instruction::new("rdrand".to_string());
     instr.write_byte(0x0F);
     instr.write_byte(0xC7);
+    instr.write_offset(Mod::NoDereference, reg as u8, 6, None);
 
     Ok(instr)
 }
@@ -10254,6 +10261,7 @@ fn matches_rdrand656(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     let mut instr = Instruction::new("rdrand".to_string());
     instr.write_byte(0x0F);
     instr.write_byte(0xC7);
+    instr.write_offset(Mod::NoDereference, reg as u8, 6, None);
 
     Ok(instr)
 }
@@ -10268,6 +10276,7 @@ fn matches_rdrand657(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     instr.write_rex(true, 0 as u8, reg as u8);
     instr.write_byte(0x0F);
     instr.write_byte(0xC7);
+    instr.write_offset(Mod::NoDereference, reg as u8, 6, None);
 
     Ok(instr)
 }
@@ -10281,6 +10290,7 @@ fn matches_rdseed658(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     let mut instr = Instruction::new("rdseed".to_string());
     instr.write_byte(0x0F);
     instr.write_byte(0xC7);
+    instr.write_offset(Mod::NoDereference, reg as u8, 7, None);
 
     Ok(instr)
 }
@@ -10294,6 +10304,7 @@ fn matches_rdseed659(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     let mut instr = Instruction::new("rdseed".to_string());
     instr.write_byte(0x0F);
     instr.write_byte(0xC7);
+    instr.write_offset(Mod::NoDereference, reg as u8, 7, None);
 
     Ok(instr)
 }
@@ -10308,6 +10319,7 @@ fn matches_rdseed660(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     instr.write_rex(true, 0 as u8, reg as u8);
     instr.write_byte(0x0F);
     instr.write_byte(0xC7);
+    instr.write_offset(Mod::NoDereference, reg as u8, 7, None);
 
     Ok(instr)
 }
@@ -13553,6 +13565,7 @@ fn matches_wrfsbase858(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     instr.write_byte(0xF3);
     instr.write_byte(0x0F);
     instr.write_byte(0xAE);
+    instr.write_offset(Mod::NoDereference, reg as u8, 2, None);
 
     Ok(instr)
 }
@@ -13568,6 +13581,7 @@ fn matches_wrfsbase859(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     instr.write_rex(true, 0 as u8, reg as u8);
     instr.write_byte(0x0F);
     instr.write_byte(0xAE);
+    instr.write_offset(Mod::NoDereference, reg as u8, 2, None);
 
     Ok(instr)
 }
@@ -13582,6 +13596,7 @@ fn matches_wrgsbase860(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     instr.write_byte(0xF3);
     instr.write_byte(0x0F);
     instr.write_byte(0xAE);
+    instr.write_offset(Mod::NoDereference, reg as u8, 3, None);
 
     Ok(instr)
 }
@@ -13597,6 +13612,7 @@ fn matches_wrgsbase861(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     instr.write_rex(true, 0 as u8, reg as u8);
     instr.write_byte(0x0F);
     instr.write_byte(0xAE);
+    instr.write_offset(Mod::NoDereference, reg as u8, 3, None);
 
     Ok(instr)
 }
@@ -13750,6 +13766,7 @@ fn matches_xbegin871(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     let mut instr = Instruction::new("xbegin".to_string());
     instr.write_byte(0xC7);
     instr.write_byte(0xF8);
+    instr.write_imm::<i16, [u8; 2]>(rel);
 
     Ok(instr)
 }
@@ -13763,6 +13780,7 @@ fn matches_xbegin872(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     let mut instr = Instruction::new("xbegin".to_string());
     instr.write_byte(0xC7);
     instr.write_byte(0xF8);
+    instr.write_imm::<i32, [u8; 4]>(rel);
 
     Ok(instr)
 }

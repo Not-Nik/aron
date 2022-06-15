@@ -105,7 +105,7 @@ def main():
 
     print("""// aron (c) Nikolas Wipper 2022
 
-use crate::instructions::Instruction;
+use crate::instructions::{Instruction, Mod};
 use crate::parse::lexer::Token;
 use crate::parse::ParseError;
 use crate::parse::helpers::*;""", file=types_header)
@@ -132,8 +132,6 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<Token>) -> Result<Ins
             if op == instruction.op2:
                 print("""    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }""", file=types_header)
 
-            # todo: some instructions have two immediate values
-            # todo: some instructions have two regs
             if op.is_imm():
                 print(f"""    let imm{len(imm) + 1} = is_imm_of_size(&mut iter, {op.get_imm_size()})?;""", file=types_header)
                 imm.append((op, f"imm{len(imm) + 1}"))
@@ -187,6 +185,7 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<Token>) -> Result<Ins
             rm = "rm.0"
 
         imm_writes = []
+        wrote_rel = False
 
         for part in parts:
             if part.startswith("REX"):
@@ -197,15 +196,21 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<Token>) -> Result<Ins
                 imm_writes.append(f"    instr.write_imm::<i{i[0].get_imm_size()}, [u8; {int(i[0].get_imm_size() / 8)}]>({i[1]});")
             elif part.startswith("c"):
                 imm_writes.append(f"    instr.write_imm::<i{rel.get_imm_size()}, [u8; {int(rel.get_imm_size() / 8)}]>(rel);")
+                wrote_rel = True
             else:
                 part = part.replace("rb", "reg as u8").replace("rw", "reg as u8").replace("rd", "reg as u8")
                 print(f"    instr.write_byte(0x{part});", file=types_header)
 
         if rm == "rm.0":
             print(f"    instr.write_offset(m, rm.0 as u8, {reg} as u8, rm.2);", file=types_header)
+        elif reg == "reg" and fill_reg:
+            print(f"    instr.write_offset(Mod::NoDereference, reg as u8, {fill_reg}, None);", file=types_header)
 
         for write in imm_writes:
             print(write, file=types_header)
+
+        if not wrote_rel and rel:
+            print(f"    instr.write_imm::<i{rel.get_imm_size()}, [u8; {int(rel.get_imm_size() / 8)}]>(rel);", file=types_header)
 
         print("""
     Ok(instr)""", file=types_header)
