@@ -5522,7 +5522,23 @@ fn matches_invd340(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_iret341(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_invlpg341(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "invlpg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_m_of_size(&mut iter, 0)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("invlpg".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x0F);
+    instr.write_byte(0x01);
+    instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_iret342(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "iret" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5533,7 +5549,7 @@ fn matches_iret341(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_iretd342(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_iretd343(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "iretd" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5544,7 +5560,7 @@ fn matches_iretd342(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_iretq343(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_iretq344(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "iretq" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5556,7 +5572,7 @@ fn matches_iretq343(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_ja344(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_ja345(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "ja" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5569,7 +5585,7 @@ fn matches_ja344(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jae345(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jae346(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jae" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5582,7 +5598,7 @@ fn matches_jae345(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jb346(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jb347(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5595,7 +5611,7 @@ fn matches_jb346(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jbe347(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jbe348(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jbe" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5608,7 +5624,7 @@ fn matches_jbe347(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jc348(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jc349(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jc" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5621,7 +5637,7 @@ fn matches_jc348(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jcxz349(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jcxz350(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jcxz" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5634,7 +5650,7 @@ fn matches_jcxz349(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_jecxz350(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jecxz351(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jecxz" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5647,7 +5663,7 @@ fn matches_jecxz350(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_jrcxz351(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jrcxz352(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jrcxz" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5660,7 +5676,7 @@ fn matches_jrcxz351(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_je352(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_je353(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "je" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5673,7 +5689,7 @@ fn matches_je352(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jg353(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jg354(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5686,7 +5702,7 @@ fn matches_jg353(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jge354(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jge355(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jge" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5699,7 +5715,7 @@ fn matches_jge354(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jl355(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jl356(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5712,7 +5728,7 @@ fn matches_jl355(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jle356(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jle357(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jle" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5725,7 +5741,7 @@ fn matches_jle356(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jna357(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jna358(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jna" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5738,7 +5754,7 @@ fn matches_jna357(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jnae358(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnae359(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnae" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5751,7 +5767,7 @@ fn matches_jnae358(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_jnb359(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnb360(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5764,7 +5780,7 @@ fn matches_jnb359(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jnbe360(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnbe361(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnbe" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5777,7 +5793,7 @@ fn matches_jnbe360(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_jnc361(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnc362(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnc" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5790,7 +5806,7 @@ fn matches_jnc361(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jne362(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jne363(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jne" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5803,7 +5819,7 @@ fn matches_jne362(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jng363(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jng364(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jng" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5816,7 +5832,7 @@ fn matches_jng363(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jnge364(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnge365(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnge" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5829,7 +5845,7 @@ fn matches_jnge364(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_jnl365(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnl366(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5842,7 +5858,7 @@ fn matches_jnl365(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jnle366(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnle367(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnle" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5855,7 +5871,7 @@ fn matches_jnle366(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_jno367(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jno368(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jno" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5868,7 +5884,7 @@ fn matches_jno367(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jnp368(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnp369(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnp" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5881,7 +5897,7 @@ fn matches_jnp368(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jns369(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jns370(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jns" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5894,7 +5910,7 @@ fn matches_jns369(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jnz370(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnz371(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnz" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5907,7 +5923,7 @@ fn matches_jnz370(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jo371(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jo372(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jo" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5920,7 +5936,7 @@ fn matches_jo371(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jp372(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jp373(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jp" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5933,7 +5949,7 @@ fn matches_jp372(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jpe373(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jpe374(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jpe" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5946,7 +5962,7 @@ fn matches_jpe373(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jpo374(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jpo375(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jpo" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5959,7 +5975,7 @@ fn matches_jpo374(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_js375(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_js376(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "js" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5972,7 +5988,7 @@ fn matches_js375(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jz376(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jz377(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jz" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5985,7 +6001,7 @@ fn matches_jz376(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_ja377(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_ja378(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "ja" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -5999,7 +6015,7 @@ fn matches_ja377(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_ja378(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_ja379(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "ja" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6009,20 +6025,6 @@ fn matches_ja378(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     instr.write_byte(0x0F);
     instr.write_byte(0x87);
     instr.write_imm::<i32, [u8; 4]>(rel);
-
-    Ok(instr)
-}
-
-fn matches_jae379(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "jae" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rel = is_rel_of_size(&mut iter, 16)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("jae".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0x83);
-    instr.write_imm::<i16, [u8; 2]>(rel);
 
     Ok(instr)
 }
@@ -6031,6 +6033,20 @@ fn matches_jae380(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jae" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rel = is_rel_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("jae".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0x83);
+    instr.write_imm::<i16, [u8; 2]>(rel);
+
+    Ok(instr)
+}
+
+fn matches_jae381(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "jae" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rel = is_rel_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("jae".to_string());
@@ -6041,7 +6057,7 @@ fn matches_jae380(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jb381(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jb382(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6055,7 +6071,7 @@ fn matches_jb381(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jb382(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jb383(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6065,20 +6081,6 @@ fn matches_jb382(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     instr.write_byte(0x0F);
     instr.write_byte(0x82);
     instr.write_imm::<i32, [u8; 4]>(rel);
-
-    Ok(instr)
-}
-
-fn matches_jbe383(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "jbe" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rel = is_rel_of_size(&mut iter, 16)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("jbe".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0x86);
-    instr.write_imm::<i16, [u8; 2]>(rel);
 
     Ok(instr)
 }
@@ -6087,6 +6089,20 @@ fn matches_jbe384(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jbe" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rel = is_rel_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("jbe".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0x86);
+    instr.write_imm::<i16, [u8; 2]>(rel);
+
+    Ok(instr)
+}
+
+fn matches_jbe385(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "jbe" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rel = is_rel_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("jbe".to_string());
@@ -6097,7 +6113,7 @@ fn matches_jbe384(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jc385(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jc386(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jc" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6111,7 +6127,7 @@ fn matches_jc385(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jc386(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jc387(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jc" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6121,20 +6137,6 @@ fn matches_jc386(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     instr.write_byte(0x0F);
     instr.write_byte(0x82);
     instr.write_imm::<i32, [u8; 4]>(rel);
-
-    Ok(instr)
-}
-
-fn matches_je387(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "je" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rel = is_rel_of_size(&mut iter, 16)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("je".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0x84);
-    instr.write_imm::<i16, [u8; 2]>(rel);
 
     Ok(instr)
 }
@@ -6143,6 +6145,20 @@ fn matches_je388(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "je" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rel = is_rel_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("je".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0x84);
+    instr.write_imm::<i16, [u8; 2]>(rel);
+
+    Ok(instr)
+}
+
+fn matches_je389(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "je" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rel = is_rel_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("je".to_string());
@@ -6153,7 +6169,7 @@ fn matches_je388(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jz389(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jz390(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jz" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6167,7 +6183,7 @@ fn matches_jz389(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jz390(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jz391(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jz" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6177,20 +6193,6 @@ fn matches_jz390(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     instr.write_byte(0x0F);
     instr.write_byte(0x84);
     instr.write_imm::<i32, [u8; 4]>(rel);
-
-    Ok(instr)
-}
-
-fn matches_jg391(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "jg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rel = is_rel_of_size(&mut iter, 16)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("jg".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0x8F);
-    instr.write_imm::<i16, [u8; 2]>(rel);
 
     Ok(instr)
 }
@@ -6199,6 +6201,20 @@ fn matches_jg392(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rel = is_rel_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("jg".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0x8F);
+    instr.write_imm::<i16, [u8; 2]>(rel);
+
+    Ok(instr)
+}
+
+fn matches_jg393(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "jg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rel = is_rel_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("jg".to_string());
@@ -6209,7 +6225,7 @@ fn matches_jg392(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jge393(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jge394(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jge" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6223,7 +6239,7 @@ fn matches_jge393(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jge394(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jge395(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jge" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6233,20 +6249,6 @@ fn matches_jge394(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     instr.write_byte(0x0F);
     instr.write_byte(0x8D);
     instr.write_imm::<i32, [u8; 4]>(rel);
-
-    Ok(instr)
-}
-
-fn matches_jl395(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "jl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rel = is_rel_of_size(&mut iter, 16)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("jl".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0x8C);
-    instr.write_imm::<i16, [u8; 2]>(rel);
 
     Ok(instr)
 }
@@ -6255,6 +6257,20 @@ fn matches_jl396(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rel = is_rel_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("jl".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0x8C);
+    instr.write_imm::<i16, [u8; 2]>(rel);
+
+    Ok(instr)
+}
+
+fn matches_jl397(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "jl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rel = is_rel_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("jl".to_string());
@@ -6265,7 +6281,7 @@ fn matches_jl396(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jle397(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jle398(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jle" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6279,7 +6295,7 @@ fn matches_jle397(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jle398(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jle399(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jle" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6289,20 +6305,6 @@ fn matches_jle398(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     instr.write_byte(0x0F);
     instr.write_byte(0x8E);
     instr.write_imm::<i32, [u8; 4]>(rel);
-
-    Ok(instr)
-}
-
-fn matches_jna399(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "jna" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rel = is_rel_of_size(&mut iter, 16)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("jna".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0x86);
-    instr.write_imm::<i16, [u8; 2]>(rel);
 
     Ok(instr)
 }
@@ -6311,6 +6313,20 @@ fn matches_jna400(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jna" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rel = is_rel_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("jna".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0x86);
+    instr.write_imm::<i16, [u8; 2]>(rel);
+
+    Ok(instr)
+}
+
+fn matches_jna401(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "jna" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rel = is_rel_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("jna".to_string());
@@ -6321,7 +6337,7 @@ fn matches_jna400(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jnae401(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnae402(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnae" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6335,7 +6351,7 @@ fn matches_jnae401(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_jnae402(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnae403(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnae" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6345,20 +6361,6 @@ fn matches_jnae402(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     instr.write_byte(0x0F);
     instr.write_byte(0x82);
     instr.write_imm::<i32, [u8; 4]>(rel);
-
-    Ok(instr)
-}
-
-fn matches_jnb403(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "jnb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rel = is_rel_of_size(&mut iter, 16)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("jnb".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0x83);
-    instr.write_imm::<i16, [u8; 2]>(rel);
 
     Ok(instr)
 }
@@ -6367,6 +6369,20 @@ fn matches_jnb404(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rel = is_rel_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("jnb".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0x83);
+    instr.write_imm::<i16, [u8; 2]>(rel);
+
+    Ok(instr)
+}
+
+fn matches_jnb405(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "jnb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rel = is_rel_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("jnb".to_string());
@@ -6377,7 +6393,7 @@ fn matches_jnb404(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jnbe405(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnbe406(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnbe" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6391,7 +6407,7 @@ fn matches_jnbe405(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_jnbe406(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnbe407(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnbe" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6401,20 +6417,6 @@ fn matches_jnbe406(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     instr.write_byte(0x0F);
     instr.write_byte(0x87);
     instr.write_imm::<i32, [u8; 4]>(rel);
-
-    Ok(instr)
-}
-
-fn matches_jnc407(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "jnc" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rel = is_rel_of_size(&mut iter, 16)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("jnc".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0x83);
-    instr.write_imm::<i16, [u8; 2]>(rel);
 
     Ok(instr)
 }
@@ -6423,6 +6425,20 @@ fn matches_jnc408(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnc" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rel = is_rel_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("jnc".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0x83);
+    instr.write_imm::<i16, [u8; 2]>(rel);
+
+    Ok(instr)
+}
+
+fn matches_jnc409(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "jnc" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rel = is_rel_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("jnc".to_string());
@@ -6433,7 +6449,7 @@ fn matches_jnc408(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jne409(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jne410(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jne" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6447,7 +6463,7 @@ fn matches_jne409(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jne410(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jne411(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jne" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6457,20 +6473,6 @@ fn matches_jne410(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     instr.write_byte(0x0F);
     instr.write_byte(0x85);
     instr.write_imm::<i32, [u8; 4]>(rel);
-
-    Ok(instr)
-}
-
-fn matches_jng411(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "jng" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rel = is_rel_of_size(&mut iter, 16)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("jng".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0x8E);
-    instr.write_imm::<i16, [u8; 2]>(rel);
 
     Ok(instr)
 }
@@ -6479,6 +6481,20 @@ fn matches_jng412(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jng" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rel = is_rel_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("jng".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0x8E);
+    instr.write_imm::<i16, [u8; 2]>(rel);
+
+    Ok(instr)
+}
+
+fn matches_jng413(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "jng" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rel = is_rel_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("jng".to_string());
@@ -6489,7 +6505,7 @@ fn matches_jng412(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jnge413(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnge414(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnge" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6503,7 +6519,7 @@ fn matches_jnge413(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_jnge414(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnge415(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnge" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6513,20 +6529,6 @@ fn matches_jnge414(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     instr.write_byte(0x0F);
     instr.write_byte(0x8C);
     instr.write_imm::<i32, [u8; 4]>(rel);
-
-    Ok(instr)
-}
-
-fn matches_jnl415(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "jnl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rel = is_rel_of_size(&mut iter, 16)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("jnl".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0x8D);
-    instr.write_imm::<i16, [u8; 2]>(rel);
 
     Ok(instr)
 }
@@ -6535,6 +6537,20 @@ fn matches_jnl416(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rel = is_rel_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("jnl".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0x8D);
+    instr.write_imm::<i16, [u8; 2]>(rel);
+
+    Ok(instr)
+}
+
+fn matches_jnl417(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "jnl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rel = is_rel_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("jnl".to_string());
@@ -6545,7 +6561,7 @@ fn matches_jnl416(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jnle417(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnle418(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnle" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6559,7 +6575,7 @@ fn matches_jnle417(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_jnle418(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnle419(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnle" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6569,20 +6585,6 @@ fn matches_jnle418(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     instr.write_byte(0x0F);
     instr.write_byte(0x8F);
     instr.write_imm::<i32, [u8; 4]>(rel);
-
-    Ok(instr)
-}
-
-fn matches_jno419(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "jno" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rel = is_rel_of_size(&mut iter, 16)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("jno".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0x81);
-    instr.write_imm::<i16, [u8; 2]>(rel);
 
     Ok(instr)
 }
@@ -6591,6 +6593,20 @@ fn matches_jno420(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jno" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rel = is_rel_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("jno".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0x81);
+    instr.write_imm::<i16, [u8; 2]>(rel);
+
+    Ok(instr)
+}
+
+fn matches_jno421(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "jno" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rel = is_rel_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("jno".to_string());
@@ -6601,7 +6617,7 @@ fn matches_jno420(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jnp421(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnp422(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnp" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6615,7 +6631,7 @@ fn matches_jnp421(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jnp422(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnp423(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnp" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6625,20 +6641,6 @@ fn matches_jnp422(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     instr.write_byte(0x0F);
     instr.write_byte(0x8B);
     instr.write_imm::<i32, [u8; 4]>(rel);
-
-    Ok(instr)
-}
-
-fn matches_jns423(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "jns" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rel = is_rel_of_size(&mut iter, 16)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("jns".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0x89);
-    instr.write_imm::<i16, [u8; 2]>(rel);
 
     Ok(instr)
 }
@@ -6647,6 +6649,20 @@ fn matches_jns424(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jns" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rel = is_rel_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("jns".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0x89);
+    instr.write_imm::<i16, [u8; 2]>(rel);
+
+    Ok(instr)
+}
+
+fn matches_jns425(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "jns" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rel = is_rel_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("jns".to_string());
@@ -6657,7 +6673,7 @@ fn matches_jns424(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jnz425(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnz426(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnz" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6671,7 +6687,7 @@ fn matches_jnz425(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jnz426(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jnz427(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jnz" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6681,20 +6697,6 @@ fn matches_jnz426(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     instr.write_byte(0x0F);
     instr.write_byte(0x85);
     instr.write_imm::<i32, [u8; 4]>(rel);
-
-    Ok(instr)
-}
-
-fn matches_jo427(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "jo" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rel = is_rel_of_size(&mut iter, 16)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("jo".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0x80);
-    instr.write_imm::<i16, [u8; 2]>(rel);
 
     Ok(instr)
 }
@@ -6703,6 +6705,20 @@ fn matches_jo428(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jo" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rel = is_rel_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("jo".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0x80);
+    instr.write_imm::<i16, [u8; 2]>(rel);
+
+    Ok(instr)
+}
+
+fn matches_jo429(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "jo" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rel = is_rel_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("jo".to_string());
@@ -6713,7 +6729,7 @@ fn matches_jo428(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jp429(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jp430(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jp" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6727,7 +6743,7 @@ fn matches_jp429(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jp430(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jp431(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jp" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6737,20 +6753,6 @@ fn matches_jp430(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     instr.write_byte(0x0F);
     instr.write_byte(0x8A);
     instr.write_imm::<i32, [u8; 4]>(rel);
-
-    Ok(instr)
-}
-
-fn matches_jpe431(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "jpe" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rel = is_rel_of_size(&mut iter, 16)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("jpe".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0x8A);
-    instr.write_imm::<i16, [u8; 2]>(rel);
 
     Ok(instr)
 }
@@ -6759,6 +6761,20 @@ fn matches_jpe432(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jpe" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rel = is_rel_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("jpe".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0x8A);
+    instr.write_imm::<i16, [u8; 2]>(rel);
+
+    Ok(instr)
+}
+
+fn matches_jpe433(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "jpe" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rel = is_rel_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("jpe".to_string());
@@ -6769,7 +6785,7 @@ fn matches_jpe432(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jpo433(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jpo434(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jpo" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6783,7 +6799,7 @@ fn matches_jpo433(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jpo434(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jpo435(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jpo" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6797,7 +6813,7 @@ fn matches_jpo434(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_js435(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_js436(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "js" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6811,7 +6827,7 @@ fn matches_js435(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_jmp436(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jmp437(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jmp" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6824,7 +6840,7 @@ fn matches_jmp436(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jmp437(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jmp438(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jmp" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6837,7 +6853,7 @@ fn matches_jmp437(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jmp438(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jmp439(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jmp" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6850,7 +6866,7 @@ fn matches_jmp438(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jmp439(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jmp440(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jmp" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6865,7 +6881,7 @@ fn matches_jmp439(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jmp440(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jmp441(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jmp" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6880,7 +6896,7 @@ fn matches_jmp440(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_jmp441(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_jmp442(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "jmp" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6895,7 +6911,7 @@ fn matches_jmp441(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_lahf442(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_lahf443(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "lahf" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6906,7 +6922,59 @@ fn matches_lahf442(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_leave443(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_lea444(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "lea" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let reg = is_reg_of_size(&mut iter, 16)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let rm = is_m_of_size(&mut iter, 0)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("lea".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x8D);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_lea445(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "lea" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let reg = is_reg_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let rm = is_m_of_size(&mut iter, 0)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("lea".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x8D);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_lea446(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "lea" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let reg = is_reg_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let rm = is_m_of_size(&mut iter, 0)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("lea".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, reg as u8);
+    instr.write_byte(0x8D);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_leave447(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "leave" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6917,7 +6985,7 @@ fn matches_leave443(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_leave444(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_leave448(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "leave" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6928,7 +6996,7 @@ fn matches_leave444(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_leave445(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_leave449(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "leave" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6939,7 +7007,7 @@ fn matches_leave445(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_lldt446(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_lldt450(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "lldt" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6955,7 +7023,7 @@ fn matches_lldt446(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_lmsw447(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_lmsw451(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "lmsw" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6971,7 +7039,7 @@ fn matches_lmsw447(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_lock448(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_lock452(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "lock" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6982,7 +7050,7 @@ fn matches_lock448(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_lodsb449(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_lodsb453(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "lodsb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -6993,7 +7061,7 @@ fn matches_lodsb449(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_lodsw450(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_lodsw454(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "lodsw" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7004,7 +7072,7 @@ fn matches_lodsw450(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_lodsd451(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_lodsd455(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "lodsd" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7015,7 +7083,7 @@ fn matches_lodsd451(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_lodsq452(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_lodsq456(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "lodsq" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7027,7 +7095,7 @@ fn matches_lodsq452(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_loop453(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_loop457(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "loop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7040,7 +7108,7 @@ fn matches_loop453(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_loope454(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_loope458(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "loope" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7053,7 +7121,7 @@ fn matches_loope454(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_loopne455(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_loopne459(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "loopne" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7066,7 +7134,7 @@ fn matches_loopne455(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_ltr456(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_ltr460(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "ltr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7082,7 +7150,7 @@ fn matches_ltr456(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_lzcnt457(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_lzcnt461(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "lzcnt" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7101,7 +7169,7 @@ fn matches_lzcnt457(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_lzcnt458(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_lzcnt462(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "lzcnt" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7120,7 +7188,7 @@ fn matches_lzcnt458(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_lzcnt459(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_lzcnt463(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "lzcnt" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7140,7 +7208,7 @@ fn matches_lzcnt459(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_monitor460(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_monitor464(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "monitor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7153,88 +7221,18 @@ fn matches_monitor460(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseE
     Ok(instr)
 }
 
-fn matches_mov461(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("mov".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x88);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_mov462(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("mov".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, reg as u8);
-    instr.write_byte(0x88);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_mov463(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 16)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("mov".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x89);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_mov464(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 32)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("mov".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x89);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_mov465(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 64)?;
+    let reg = is_reg_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("mov".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, reg as u8);
-    instr.write_byte(0x89);
+    instr.write_byte(0x88);
     instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
 
     Ok(instr)
@@ -7244,6 +7242,76 @@ fn matches_mov466(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("mov".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, reg as u8);
+    instr.write_byte(0x88);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_mov467(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 16)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("mov".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x89);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_mov468(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 32)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("mov".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x89);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_mov469(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 64)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("mov".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, reg as u8);
+    instr.write_byte(0x89);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_mov470(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let reg = is_reg_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
@@ -7257,7 +7325,7 @@ fn matches_mov466(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mov467(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mov471(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7275,7 +7343,7 @@ fn matches_mov467(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mov468(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mov472(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7292,7 +7360,7 @@ fn matches_mov468(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mov469(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mov473(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7309,7 +7377,7 @@ fn matches_mov469(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mov470(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mov474(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7327,7 +7395,7 @@ fn matches_mov470(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mov471(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mov475(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7342,7 +7410,7 @@ fn matches_mov471(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mov472(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mov476(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7358,7 +7426,7 @@ fn matches_mov472(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mov473(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mov477(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7373,7 +7441,7 @@ fn matches_mov473(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mov474(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mov478(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7388,7 +7456,7 @@ fn matches_mov474(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mov475(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mov479(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7404,7 +7472,7 @@ fn matches_mov475(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mov476(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mov480(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7422,7 +7490,7 @@ fn matches_mov476(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mov477(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mov481(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7441,7 +7509,7 @@ fn matches_mov477(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mov478(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mov482(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7459,7 +7527,7 @@ fn matches_mov478(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mov479(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mov483(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7477,7 +7545,7 @@ fn matches_mov479(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mov480(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mov484(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mov" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7496,7 +7564,7 @@ fn matches_mov480(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_movsb481(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_movsb485(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "movsb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7507,7 +7575,7 @@ fn matches_movsb481(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_movsw482(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_movsw486(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "movsw" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7518,7 +7586,7 @@ fn matches_movsw482(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_movsd483(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_movsd487(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "movsd" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7529,7 +7597,7 @@ fn matches_movsd483(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_movsq484(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_movsq488(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "movsq" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7541,7 +7609,7 @@ fn matches_movsq484(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_movsx485(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_movsx489(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "movsx" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7559,7 +7627,7 @@ fn matches_movsx485(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_movsx486(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_movsx490(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "movsx" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7577,7 +7645,7 @@ fn matches_movsx486(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_movsx487(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_movsx491(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "movsx" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7596,7 +7664,7 @@ fn matches_movsx487(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_movsx488(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_movsx492(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "movsx" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7614,7 +7682,7 @@ fn matches_movsx488(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_movsx489(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_movsx493(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "movsx" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7633,7 +7701,7 @@ fn matches_movsx489(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_movsxd490(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_movsxd494(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "movsxd" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7651,7 +7719,7 @@ fn matches_movsxd490(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_movzx491(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_movzx495(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "movzx" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7669,7 +7737,7 @@ fn matches_movzx491(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_movzx492(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_movzx496(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "movzx" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7687,7 +7755,7 @@ fn matches_movzx492(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_movzx493(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_movzx497(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "movzx" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7706,7 +7774,7 @@ fn matches_movzx493(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_movzx494(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_movzx498(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "movzx" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7724,7 +7792,7 @@ fn matches_movzx494(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_movzx495(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_movzx499(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "movzx" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7743,7 +7811,7 @@ fn matches_movzx495(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_mul496(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mul500(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mul" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7758,7 +7826,7 @@ fn matches_mul496(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mul497(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mul501(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mul" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7774,7 +7842,7 @@ fn matches_mul497(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mul498(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mul502(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mul" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7789,7 +7857,7 @@ fn matches_mul498(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mul499(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mul503(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mul" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7804,7 +7872,7 @@ fn matches_mul499(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mul500(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mul504(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mul" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7820,7 +7888,7 @@ fn matches_mul500(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_mwait501(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_mwait505(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "mwait" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7833,7 +7901,7 @@ fn matches_mwait501(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_neg502(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_neg506(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "neg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7848,7 +7916,7 @@ fn matches_neg502(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_neg503(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_neg507(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "neg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7864,7 +7932,7 @@ fn matches_neg503(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_neg504(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_neg508(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "neg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7879,7 +7947,7 @@ fn matches_neg504(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_neg505(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_neg509(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "neg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7894,7 +7962,7 @@ fn matches_neg505(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_neg506(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_neg510(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "neg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7910,7 +7978,7 @@ fn matches_neg506(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_not507(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_not511(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "not" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7925,7 +7993,7 @@ fn matches_not507(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_not508(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_not512(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "not" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7941,7 +8009,7 @@ fn matches_not508(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_not509(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_not513(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "not" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7956,7 +8024,7 @@ fn matches_not509(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_not510(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_not514(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "not" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7971,7 +8039,7 @@ fn matches_not510(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_not511(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_not515(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "not" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -7987,7 +8055,7 @@ fn matches_not511(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_or512(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_or516(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8002,7 +8070,7 @@ fn matches_or512(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_or513(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_or517(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8017,7 +8085,7 @@ fn matches_or513(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_or514(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_or518(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8032,7 +8100,7 @@ fn matches_or514(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_or515(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_or519(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8048,7 +8116,7 @@ fn matches_or515(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_or516(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_or520(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8066,7 +8134,7 @@ fn matches_or516(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_or517(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_or521(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8085,7 +8153,7 @@ fn matches_or517(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_or518(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_or522(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8103,94 +8171,20 @@ fn matches_or518(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_or519(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 32)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("or".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x81);
-    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
-    instr.write_imm::<i32, [u8; 4]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_or520(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 32)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("or".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 1 as u8);
-    instr.write_byte(0x81);
-    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
-    instr.write_imm::<i32, [u8; 4]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_or521(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("or".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x83);
-    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_or522(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("or".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x83);
-    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
 fn matches_or523(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 32)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    let imm1 = is_imm_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("or".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 1 as u8);
-    instr.write_byte(0x83);
+    instr.write_byte(0x81);
     instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
+    instr.write_imm::<i32, [u8; 4]>(imm1);
 
     Ok(instr)
 }
@@ -8199,15 +8193,17 @@ fn matches_or524(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
+    let rm = is_rm_of_size(&mut iter, 64)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
+    let imm1 = is_imm_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("or".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x08);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_rex(true, rm.0 as u8, 1 as u8);
+    instr.write_byte(0x81);
+    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
+    instr.write_imm::<i32, [u8; 4]>(imm1);
 
     Ok(instr)
 }
@@ -8216,16 +8212,16 @@ fn matches_or525(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("or".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, reg as u8);
-    instr.write_byte(0x08);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_byte(0x83);
+    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -8234,15 +8230,16 @@ fn matches_or526(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
+    let rm = is_rm_of_size(&mut iter, 32)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 16)?;
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("or".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x09);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_byte(0x83);
+    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -8251,15 +8248,17 @@ fn matches_or527(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
+    let rm = is_rm_of_size(&mut iter, 64)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 32)?;
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("or".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x09);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_rex(true, rm.0 as u8, 1 as u8);
+    instr.write_byte(0x83);
+    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -8268,15 +8267,14 @@ fn matches_or528(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 64)?;
+    let reg = is_reg_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("or".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, reg as u8);
-    instr.write_byte(0x09);
+    instr.write_byte(0x08);
     instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
 
     Ok(instr)
@@ -8286,6 +8284,76 @@ fn matches_or529(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("or".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, reg as u8);
+    instr.write_byte(0x08);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_or530(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 16)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("or".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x09);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_or531(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 32)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("or".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x09);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_or532(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 64)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("or".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, reg as u8);
+    instr.write_byte(0x09);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_or533(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let reg = is_reg_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
@@ -8299,7 +8367,7 @@ fn matches_or529(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_or530(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_or534(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8317,7 +8385,7 @@ fn matches_or530(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_or531(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_or535(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8334,7 +8402,7 @@ fn matches_or531(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_or532(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_or536(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8351,7 +8419,7 @@ fn matches_or532(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_or533(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_or537(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "or" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8369,7 +8437,7 @@ fn matches_or533(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)
     Ok(instr)
 }
 
-fn matches_out534(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_out538(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "out" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8384,7 +8452,7 @@ fn matches_out534(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_out535(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_out539(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "out" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8399,7 +8467,7 @@ fn matches_out535(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_out536(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_out540(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "out" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8414,7 +8482,7 @@ fn matches_out536(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_out537(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_out541(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "out" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8428,7 +8496,7 @@ fn matches_out537(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_out538(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_out542(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "out" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8442,7 +8510,7 @@ fn matches_out538(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_out539(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_out543(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "out" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8456,7 +8524,7 @@ fn matches_out539(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_outsb540(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_outsb544(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "outsb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8467,7 +8535,7 @@ fn matches_outsb540(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_outsw541(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_outsw545(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "outsw" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8478,7 +8546,7 @@ fn matches_outsw541(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_outsd542(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_outsd546(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "outsd" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8489,7 +8557,7 @@ fn matches_outsd542(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_pause543(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_pause547(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "pause" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8501,7 +8569,7 @@ fn matches_pause543(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_pop544(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_pop548(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8516,7 +8584,7 @@ fn matches_pop544(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_pop545(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_pop549(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8531,7 +8599,7 @@ fn matches_pop545(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_pop546(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_pop550(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8546,7 +8614,7 @@ fn matches_pop546(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_pop547(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_pop551(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8558,7 +8626,7 @@ fn matches_pop547(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_pop548(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_pop552(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8570,7 +8638,7 @@ fn matches_pop548(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_pop549(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_pop553(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8582,7 +8650,7 @@ fn matches_pop549(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_pop550(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_pop554(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8594,7 +8662,7 @@ fn matches_pop550(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_pop551(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_pop555(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8606,7 +8674,7 @@ fn matches_pop551(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_pop552(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_pop556(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8618,67 +8686,15 @@ fn matches_pop552(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_pop553(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    if get_next(&mut iter)? != "fs" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("pop".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0xA1);
-
-    Ok(instr)
-}
-
-fn matches_pop554(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    if get_next(&mut iter)? != "fs" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("pop".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0xA1);
-
-    Ok(instr)
-}
-
-fn matches_pop555(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    if get_next(&mut iter)? != "fs" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("pop".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0xA1);
-
-    Ok(instr)
-}
-
-fn matches_pop556(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    if get_next(&mut iter)? != "gs" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("pop".to_string());
-    instr.write_byte(0x0F);
-    instr.write_byte(0xA9);
-
-    Ok(instr)
-}
-
 fn matches_pop557(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    if get_next(&mut iter)? != "gs" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "fs" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("pop".to_string());
     instr.write_byte(0x0F);
-    instr.write_byte(0xA9);
+    instr.write_byte(0xA1);
 
     Ok(instr)
 }
@@ -8687,6 +8703,32 @@ fn matches_pop558(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    if get_next(&mut iter)? != "fs" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("pop".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0xA1);
+
+    Ok(instr)
+}
+
+fn matches_pop559(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    if get_next(&mut iter)? != "fs" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("pop".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0xA1);
+
+    Ok(instr)
+}
+
+fn matches_pop560(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     if get_next(&mut iter)? != "gs" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("pop".to_string());
@@ -8696,7 +8738,33 @@ fn matches_pop558(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_popa559(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_pop561(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    if get_next(&mut iter)? != "gs" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("pop".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0xA9);
+
+    Ok(instr)
+}
+
+fn matches_pop562(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "pop" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    if get_next(&mut iter)? != "gs" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("pop".to_string());
+    instr.write_byte(0x0F);
+    instr.write_byte(0xA9);
+
+    Ok(instr)
+}
+
+fn matches_popa563(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "popa" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8707,7 +8775,7 @@ fn matches_popa559(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_popad560(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_popad564(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "popad" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8718,7 +8786,7 @@ fn matches_popad560(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_popcnt561(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_popcnt565(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "popcnt" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8737,7 +8805,7 @@ fn matches_popcnt561(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_popcnt562(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_popcnt566(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "popcnt" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8756,7 +8824,7 @@ fn matches_popcnt562(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_popcnt563(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_popcnt567(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "popcnt" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8776,7 +8844,7 @@ fn matches_popcnt563(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_popf564(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_popf568(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "popf" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8787,7 +8855,7 @@ fn matches_popf564(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_popfd565(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_popfd569(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "popfd" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8798,7 +8866,7 @@ fn matches_popfd565(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_popfq566(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_popfq570(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "popfq" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8809,7 +8877,7 @@ fn matches_popfq566(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_push567(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_push571(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "push" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8824,7 +8892,7 @@ fn matches_push567(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_push568(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_push572(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "push" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8839,7 +8907,7 @@ fn matches_push568(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_push569(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_push573(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "push" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8854,7 +8922,7 @@ fn matches_push569(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_push570(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_push574(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "push" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8866,7 +8934,7 @@ fn matches_push570(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_push571(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_push575(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "push" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8878,7 +8946,7 @@ fn matches_push571(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_push572(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_push576(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "push" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8890,7 +8958,7 @@ fn matches_push572(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_push573(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_push577(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "push" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8903,7 +8971,7 @@ fn matches_push573(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_push574(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_push578(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "push" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8916,7 +8984,7 @@ fn matches_push574(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_push575(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_push579(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "push" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8929,7 +8997,7 @@ fn matches_push575(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_push576(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_push580(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "push" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8941,7 +9009,7 @@ fn matches_push576(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_push577(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_push581(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "push" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8953,7 +9021,7 @@ fn matches_push577(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_push578(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_push582(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "push" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8965,7 +9033,7 @@ fn matches_push578(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_push579(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_push583(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "push" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8977,7 +9045,7 @@ fn matches_push579(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_push580(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_push584(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "push" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -8990,7 +9058,7 @@ fn matches_push580(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_push581(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_push585(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "push" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -9003,7 +9071,7 @@ fn matches_push581(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_pusha582(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_pusha586(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "pusha" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -9014,7 +9082,7 @@ fn matches_pusha582(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_pushad583(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_pushad587(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "pushad" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -9025,7 +9093,7 @@ fn matches_pushad583(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_pushf584(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_pushf588(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "pushf" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -9036,7 +9104,7 @@ fn matches_pushf584(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_pushfd585(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_pushfd589(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "pushfd" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -9047,7 +9115,7 @@ fn matches_pushfd585(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_pushfq586(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_pushfq590(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "pushfq" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -9058,90 +9126,19 @@ fn matches_pushfq586(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_rcl587(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rcl".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD0);
-    instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_rcl588(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rcl".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, 2 as u8);
-    instr.write_byte(0xD0);
-    instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_rcl589(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rcl".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD2);
-    instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_rcl590(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rcl".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, 2 as u8);
-    instr.write_byte(0xD2);
-    instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_rcl591(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("rcl".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xC0);
+    instr.write_byte(0xD0);
     instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -9152,6 +9149,77 @@ fn matches_rcl592(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rcl".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, 2 as u8);
+    instr.write_byte(0xD0);
+    instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rcl593(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rcl".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD2);
+    instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rcl594(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rcl".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, 2 as u8);
+    instr.write_byte(0xD2);
+    instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rcl595(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rcl".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xC0);
+    instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
+
+    Ok(instr)
+}
+
+fn matches_rcl596(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("rcl".to_string());
@@ -9165,87 +9233,17 @@ fn matches_rcl592(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_rcl593(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rcl".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD1);
-    instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_rcl594(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rcl".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD3);
-    instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_rcl595(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rcl".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xC1);
-    instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_rcl596(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rcl".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD1);
-    instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_rcl597(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("rcl".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 2 as u8);
     instr.write_byte(0xD1);
     instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
 
@@ -9256,7 +9254,7 @@ fn matches_rcl598(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
@@ -9273,16 +9271,16 @@ fn matches_rcl599(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("rcl".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 2 as u8);
-    instr.write_byte(0xD3);
+    instr.write_byte(0xC1);
     instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -9293,6 +9291,76 @@ fn matches_rcl600(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 32)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rcl".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD1);
+    instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rcl601(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rcl".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, 2 as u8);
+    instr.write_byte(0xD1);
+    instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rcl602(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rcl".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD3);
+    instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rcl603(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rcl".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, 2 as u8);
+    instr.write_byte(0xD3);
+    instr.write_offset(m, rm.0 as u8, 2 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rcl604(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("rcl".to_string());
@@ -9305,7 +9373,7 @@ fn matches_rcl600(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_rcl601(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rcl605(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rcl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -9324,90 +9392,19 @@ fn matches_rcl601(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_rcr602(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rcr".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD0);
-    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_rcr603(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rcr".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, 3 as u8);
-    instr.write_byte(0xD0);
-    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_rcr604(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rcr".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD2);
-    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_rcr605(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rcr".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, 3 as u8);
-    instr.write_byte(0xD2);
-    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_rcr606(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("rcr".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xC0);
+    instr.write_byte(0xD0);
     instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -9418,6 +9415,77 @@ fn matches_rcr607(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rcr".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, 3 as u8);
+    instr.write_byte(0xD0);
+    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rcr608(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rcr".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD2);
+    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rcr609(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rcr".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, 3 as u8);
+    instr.write_byte(0xD2);
+    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rcr610(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rcr".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xC0);
+    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
+
+    Ok(instr)
+}
+
+fn matches_rcr611(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("rcr".to_string());
@@ -9431,87 +9499,17 @@ fn matches_rcr607(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_rcr608(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rcr".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD1);
-    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_rcr609(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rcr".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD3);
-    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_rcr610(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rcr".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xC1);
-    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_rcr611(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rcr".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD1);
-    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_rcr612(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("rcr".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 3 as u8);
     instr.write_byte(0xD1);
     instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
 
@@ -9522,7 +9520,7 @@ fn matches_rcr613(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
@@ -9539,16 +9537,16 @@ fn matches_rcr614(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("rcr".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 3 as u8);
-    instr.write_byte(0xD3);
+    instr.write_byte(0xC1);
     instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -9559,6 +9557,76 @@ fn matches_rcr615(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 32)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rcr".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD1);
+    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rcr616(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rcr".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, 3 as u8);
+    instr.write_byte(0xD1);
+    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rcr617(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rcr".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD3);
+    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rcr618(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rcr".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, 3 as u8);
+    instr.write_byte(0xD3);
+    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rcr619(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("rcr".to_string());
@@ -9571,7 +9639,7 @@ fn matches_rcr615(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_rcr616(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rcr620(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rcr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -9590,90 +9658,19 @@ fn matches_rcr616(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_rol617(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rol".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD0);
-    instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_rol618(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rol".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, 0 as u8);
-    instr.write_byte(0xD0);
-    instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_rol619(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rol".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD2);
-    instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_rol620(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rol".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, 0 as u8);
-    instr.write_byte(0xD2);
-    instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_rol621(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("rol".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xC0);
+    instr.write_byte(0xD0);
     instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -9684,6 +9681,77 @@ fn matches_rol622(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rol".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, 0 as u8);
+    instr.write_byte(0xD0);
+    instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rol623(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rol".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD2);
+    instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rol624(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rol".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, 0 as u8);
+    instr.write_byte(0xD2);
+    instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rol625(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rol".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xC0);
+    instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
+
+    Ok(instr)
+}
+
+fn matches_rol626(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("rol".to_string());
@@ -9697,87 +9765,17 @@ fn matches_rol622(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_rol623(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rol".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD1);
-    instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_rol624(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rol".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD3);
-    instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_rol625(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rol".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xC1);
-    instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_rol626(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("rol".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD1);
-    instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_rol627(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("rol".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 0 as u8);
     instr.write_byte(0xD1);
     instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
 
@@ -9788,7 +9786,7 @@ fn matches_rol628(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
@@ -9805,16 +9803,16 @@ fn matches_rol629(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("rol".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 0 as u8);
-    instr.write_byte(0xD3);
+    instr.write_byte(0xC1);
     instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -9825,6 +9823,76 @@ fn matches_rol630(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 32)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rol".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD1);
+    instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rol631(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rol".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, 0 as u8);
+    instr.write_byte(0xD1);
+    instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rol632(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rol".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD3);
+    instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rol633(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("rol".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, 0 as u8);
+    instr.write_byte(0xD3);
+    instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_rol634(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("rol".to_string());
@@ -9837,7 +9905,7 @@ fn matches_rol630(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_rol631(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rol635(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rol" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -9856,90 +9924,19 @@ fn matches_rol631(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_ror632(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("ror".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD0);
-    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_ror633(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("ror".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, 1 as u8);
-    instr.write_byte(0xD0);
-    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_ror634(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("ror".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD2);
-    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_ror635(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("ror".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, 1 as u8);
-    instr.write_byte(0xD2);
-    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_ror636(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("ror".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xC0);
+    instr.write_byte(0xD0);
     instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -9950,6 +9947,77 @@ fn matches_ror637(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("ror".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, 1 as u8);
+    instr.write_byte(0xD0);
+    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_ror638(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("ror".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD2);
+    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_ror639(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("ror".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, 1 as u8);
+    instr.write_byte(0xD2);
+    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_ror640(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("ror".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xC0);
+    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
+
+    Ok(instr)
+}
+
+fn matches_ror641(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("ror".to_string());
@@ -9963,87 +10031,17 @@ fn matches_ror637(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_ror638(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("ror".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD1);
-    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_ror639(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("ror".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD3);
-    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_ror640(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("ror".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xC1);
-    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_ror641(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("ror".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD1);
-    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_ror642(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("ror".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 1 as u8);
     instr.write_byte(0xD1);
     instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
 
@@ -10054,7 +10052,7 @@ fn matches_ror643(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
@@ -10071,6 +10069,76 @@ fn matches_ror644(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 16)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("ror".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xC1);
+    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
+
+    Ok(instr)
+}
+
+fn matches_ror645(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("ror".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD1);
+    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_ror646(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("ror".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, 1 as u8);
+    instr.write_byte(0xD1);
+    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_ror647(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("ror".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD3);
+    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_ror648(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 64)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
@@ -10085,7 +10153,7 @@ fn matches_ror644(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_ror645(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_ror649(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10103,7 +10171,7 @@ fn matches_ror645(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_ror646(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_ror650(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "ror" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10122,7 +10190,7 @@ fn matches_ror646(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_rdfsbase647(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rdfsbase651(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rdfsbase" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10137,7 +10205,7 @@ fn matches_rdfsbase647(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     Ok(instr)
 }
 
-fn matches_rdfsbase648(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rdfsbase652(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rdfsbase" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10153,7 +10221,7 @@ fn matches_rdfsbase648(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     Ok(instr)
 }
 
-fn matches_rdgsbase649(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rdgsbase653(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rdgsbase" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10168,7 +10236,7 @@ fn matches_rdgsbase649(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     Ok(instr)
 }
 
-fn matches_rdgsbase650(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rdgsbase654(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rdgsbase" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10184,7 +10252,7 @@ fn matches_rdgsbase650(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     Ok(instr)
 }
 
-fn matches_rdmsr651(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rdmsr655(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rdmsr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10196,7 +10264,7 @@ fn matches_rdmsr651(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_rdpid652(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rdpid656(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rdpid" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10211,7 +10279,7 @@ fn matches_rdpid652(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_rdpid653(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rdpid657(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rdpid" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10226,7 +10294,7 @@ fn matches_rdpid653(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_rdpmc654(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rdpmc658(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rdpmc" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10238,7 +10306,7 @@ fn matches_rdpmc654(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_rdrand655(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rdrand659(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rdrand" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10252,7 +10320,7 @@ fn matches_rdrand655(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_rdrand656(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rdrand660(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rdrand" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10266,7 +10334,7 @@ fn matches_rdrand656(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_rdrand657(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rdrand661(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rdrand" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10281,7 +10349,7 @@ fn matches_rdrand657(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_rdseed658(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rdseed662(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rdseed" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10295,7 +10363,7 @@ fn matches_rdseed658(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_rdseed659(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rdseed663(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rdseed" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10309,7 +10377,7 @@ fn matches_rdseed659(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_rdseed660(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rdseed664(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rdseed" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10324,7 +10392,7 @@ fn matches_rdseed660(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_rdtsc661(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rdtsc665(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rdtsc" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10336,7 +10404,7 @@ fn matches_rdtsc661(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_rdtscp662(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rdtscp666(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rdtscp" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10349,7 +10417,7 @@ fn matches_rdtscp662(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_ret663(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_ret667(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "ret" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10360,7 +10428,7 @@ fn matches_ret663(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_retf664(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_retf668(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "retf" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10371,7 +10439,7 @@ fn matches_retf664(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_ret665(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_ret669(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "ret" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10384,7 +10452,7 @@ fn matches_ret665(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_ret666(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_ret670(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "ret" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10397,7 +10465,7 @@ fn matches_ret666(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_rsm667(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_rsm671(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "rsm" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10409,7 +10477,7 @@ fn matches_rsm667(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sahf668(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sahf672(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sahf" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10420,90 +10488,19 @@ fn matches_sahf668(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_sal669(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sal".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD0);
-    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_sal670(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sal".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, 4 as u8);
-    instr.write_byte(0xD0);
-    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_sal671(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sal".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD2);
-    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_sal672(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sal".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, 4 as u8);
-    instr.write_byte(0xD2);
-    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_sal673(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sal".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xC0);
+    instr.write_byte(0xD0);
     instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -10514,6 +10511,77 @@ fn matches_sal674(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sal".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, 4 as u8);
+    instr.write_byte(0xD0);
+    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sal675(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sal".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD2);
+    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sal676(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sal".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, 4 as u8);
+    instr.write_byte(0xD2);
+    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sal677(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sal".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xC0);
+    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
+
+    Ok(instr)
+}
+
+fn matches_sal678(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sal".to_string());
@@ -10527,87 +10595,17 @@ fn matches_sal674(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sal675(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sal".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD1);
-    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_sal676(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sal".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD3);
-    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_sal677(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sal".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xC1);
-    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_sal678(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sal".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD1);
-    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_sal679(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sal".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 4 as u8);
     instr.write_byte(0xD1);
     instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
 
@@ -10618,7 +10616,7 @@ fn matches_sal680(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
@@ -10635,16 +10633,16 @@ fn matches_sal681(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sal".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 4 as u8);
-    instr.write_byte(0xD3);
+    instr.write_byte(0xC1);
     instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -10655,6 +10653,76 @@ fn matches_sal682(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 32)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sal".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD1);
+    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sal683(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sal".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, 4 as u8);
+    instr.write_byte(0xD1);
+    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sal684(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sal".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD3);
+    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sal685(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sal".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, 4 as u8);
+    instr.write_byte(0xD3);
+    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sal686(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sal".to_string());
@@ -10667,7 +10735,7 @@ fn matches_sal682(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sal683(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sal687(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sal" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10686,90 +10754,19 @@ fn matches_sal683(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sar684(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sar".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD0);
-    instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_sar685(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sar".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, 7 as u8);
-    instr.write_byte(0xD0);
-    instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_sar686(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sar".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD2);
-    instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_sar687(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sar".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, 7 as u8);
-    instr.write_byte(0xD2);
-    instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_sar688(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sar".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xC0);
+    instr.write_byte(0xD0);
     instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -10780,6 +10777,77 @@ fn matches_sar689(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sar".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, 7 as u8);
+    instr.write_byte(0xD0);
+    instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sar690(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sar".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD2);
+    instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sar691(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sar".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, 7 as u8);
+    instr.write_byte(0xD2);
+    instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sar692(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sar".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xC0);
+    instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
+
+    Ok(instr)
+}
+
+fn matches_sar693(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sar".to_string());
@@ -10793,87 +10861,17 @@ fn matches_sar689(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sar690(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sar".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD1);
-    instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_sar691(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sar".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD3);
-    instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_sar692(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sar".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xC1);
-    instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_sar693(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sar".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD1);
-    instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_sar694(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sar".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 7 as u8);
     instr.write_byte(0xD1);
     instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
 
@@ -10884,7 +10882,7 @@ fn matches_sar695(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
@@ -10901,16 +10899,16 @@ fn matches_sar696(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sar".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 7 as u8);
-    instr.write_byte(0xD3);
+    instr.write_byte(0xC1);
     instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -10921,6 +10919,76 @@ fn matches_sar697(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 32)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sar".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD1);
+    instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sar698(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sar".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, 7 as u8);
+    instr.write_byte(0xD1);
+    instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sar699(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sar".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD3);
+    instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sar700(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sar".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, 7 as u8);
+    instr.write_byte(0xD3);
+    instr.write_offset(m, rm.0 as u8, 7 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sar701(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sar".to_string());
@@ -10933,7 +11001,7 @@ fn matches_sar697(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sar698(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sar702(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sar" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -10952,90 +11020,19 @@ fn matches_sar698(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_shl699(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("shl".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD0);
-    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_shl700(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("shl".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, 4 as u8);
-    instr.write_byte(0xD0);
-    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_shl701(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("shl".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD2);
-    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_shl702(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("shl".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, 4 as u8);
-    instr.write_byte(0xD2);
-    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_shl703(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("shl".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xC0);
+    instr.write_byte(0xD0);
     instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -11046,6 +11043,77 @@ fn matches_shl704(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("shl".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, 4 as u8);
+    instr.write_byte(0xD0);
+    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_shl705(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("shl".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD2);
+    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_shl706(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("shl".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, 4 as u8);
+    instr.write_byte(0xD2);
+    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_shl707(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("shl".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xC0);
+    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
+
+    Ok(instr)
+}
+
+fn matches_shl708(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("shl".to_string());
@@ -11059,87 +11127,17 @@ fn matches_shl704(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_shl705(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("shl".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD1);
-    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_shl706(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("shl".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD3);
-    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_shl707(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("shl".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xC1);
-    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_shl708(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("shl".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD1);
-    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_shl709(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("shl".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 4 as u8);
     instr.write_byte(0xD1);
     instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
 
@@ -11150,7 +11148,7 @@ fn matches_shl710(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
@@ -11167,16 +11165,16 @@ fn matches_shl711(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("shl".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 4 as u8);
-    instr.write_byte(0xD3);
+    instr.write_byte(0xC1);
     instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -11187,6 +11185,76 @@ fn matches_shl712(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 32)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("shl".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD1);
+    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_shl713(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("shl".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, 4 as u8);
+    instr.write_byte(0xD1);
+    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_shl714(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("shl".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD3);
+    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_shl715(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("shl".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, 4 as u8);
+    instr.write_byte(0xD3);
+    instr.write_offset(m, rm.0 as u8, 4 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_shl716(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("shl".to_string());
@@ -11199,7 +11267,7 @@ fn matches_shl712(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_shl713(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_shl717(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "shl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11218,90 +11286,19 @@ fn matches_shl713(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_shr714(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("shr".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD0);
-    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_shr715(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("shr".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, 5 as u8);
-    instr.write_byte(0xD0);
-    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_shr716(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("shr".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD2);
-    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_shr717(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("shr".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, 5 as u8);
-    instr.write_byte(0xD2);
-    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_shr718(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("shr".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xC0);
+    instr.write_byte(0xD0);
     instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -11312,6 +11309,77 @@ fn matches_shr719(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("shr".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, 5 as u8);
+    instr.write_byte(0xD0);
+    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_shr720(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("shr".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD2);
+    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_shr721(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("shr".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, 5 as u8);
+    instr.write_byte(0xD2);
+    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_shr722(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("shr".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xC0);
+    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
+
+    Ok(instr)
+}
+
+fn matches_shr723(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("shr".to_string());
@@ -11325,87 +11393,17 @@ fn matches_shr719(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_shr720(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("shr".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD1);
-    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_shr721(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("shr".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD3);
-    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
-
-    Ok(instr)
-}
-
-fn matches_shr722(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("shr".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xC1);
-    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_shr723(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("shr".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0xD1);
-    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_shr724(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("shr".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 5 as u8);
     instr.write_byte(0xD1);
     instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
 
@@ -11416,7 +11414,7 @@ fn matches_shr725(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
@@ -11433,6 +11431,76 @@ fn matches_shr726(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 16)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("shr".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xC1);
+    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
+
+    Ok(instr)
+}
+
+fn matches_shr727(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("shr".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD1);
+    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_shr728(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "1" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("shr".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, 5 as u8);
+    instr.write_byte(0xD1);
+    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_shr729(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("shr".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0xD3);
+    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_shr730(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 64)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "cl" { return Err((iter.count(), ParseError::InvalidOperand)); }
@@ -11447,7 +11515,7 @@ fn matches_shr726(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_shr727(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_shr731(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11465,7 +11533,7 @@ fn matches_shr727(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_shr728(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_shr732(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "shr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11484,7 +11552,7 @@ fn matches_shr728(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sbb729(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sbb733(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11499,7 +11567,7 @@ fn matches_sbb729(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sbb730(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sbb734(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11514,7 +11582,7 @@ fn matches_sbb730(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sbb731(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sbb735(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11529,7 +11597,7 @@ fn matches_sbb731(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sbb732(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sbb736(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11545,7 +11613,7 @@ fn matches_sbb732(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sbb733(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sbb737(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11563,7 +11631,7 @@ fn matches_sbb733(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sbb734(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sbb738(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11582,7 +11650,7 @@ fn matches_sbb734(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sbb735(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sbb739(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11600,94 +11668,20 @@ fn matches_sbb735(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sbb736(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 32)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sbb".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x81);
-    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
-    instr.write_imm::<i32, [u8; 4]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_sbb737(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 32)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sbb".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 3 as u8);
-    instr.write_byte(0x81);
-    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
-    instr.write_imm::<i32, [u8; 4]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_sbb738(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sbb".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x83);
-    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_sbb739(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sbb".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x83);
-    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
 fn matches_sbb740(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 32)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
+    let imm1 = is_imm_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sbb".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 3 as u8);
-    instr.write_byte(0x83);
+    instr.write_byte(0x81);
     instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
+    instr.write_imm::<i32, [u8; 4]>(imm1);
 
     Ok(instr)
 }
@@ -11696,15 +11690,17 @@ fn matches_sbb741(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
+    let rm = is_rm_of_size(&mut iter, 64)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
+    let imm1 = is_imm_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sbb".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x18);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_rex(true, rm.0 as u8, 3 as u8);
+    instr.write_byte(0x81);
+    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
+    instr.write_imm::<i32, [u8; 4]>(imm1);
 
     Ok(instr)
 }
@@ -11713,16 +11709,16 @@ fn matches_sbb742(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sbb".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, reg as u8);
-    instr.write_byte(0x18);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_byte(0x83);
+    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -11731,15 +11727,16 @@ fn matches_sbb743(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
+    let rm = is_rm_of_size(&mut iter, 32)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 16)?;
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sbb".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x19);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_byte(0x83);
+    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -11748,15 +11745,17 @@ fn matches_sbb744(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
+    let rm = is_rm_of_size(&mut iter, 64)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 32)?;
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sbb".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x19);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_rex(true, rm.0 as u8, 3 as u8);
+    instr.write_byte(0x83);
+    instr.write_offset(m, rm.0 as u8, 3 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -11765,15 +11764,14 @@ fn matches_sbb745(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 64)?;
+    let reg = is_reg_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sbb".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, reg as u8);
-    instr.write_byte(0x19);
+    instr.write_byte(0x18);
     instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
 
     Ok(instr)
@@ -11783,6 +11781,76 @@ fn matches_sbb746(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sbb".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, reg as u8);
+    instr.write_byte(0x18);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sbb747(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 16)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sbb".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x19);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sbb748(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 32)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sbb".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x19);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sbb749(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 64)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sbb".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, reg as u8);
+    instr.write_byte(0x19);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sbb750(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let reg = is_reg_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
@@ -11796,7 +11864,7 @@ fn matches_sbb746(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sbb747(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sbb751(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11814,7 +11882,7 @@ fn matches_sbb747(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sbb748(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sbb752(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11831,7 +11899,7 @@ fn matches_sbb748(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sbb749(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sbb753(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11848,7 +11916,7 @@ fn matches_sbb749(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sbb750(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sbb754(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sbb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11866,7 +11934,7 @@ fn matches_sbb750(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_scasb751(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_scasb755(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "scasb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11877,7 +11945,7 @@ fn matches_scasb751(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_scasw752(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_scasw756(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "scasw" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11888,7 +11956,7 @@ fn matches_scasw752(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_scasd753(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_scasd757(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "scasd" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11899,7 +11967,7 @@ fn matches_scasd753(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_scasq754(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_scasq758(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "scasq" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11911,7 +11979,7 @@ fn matches_scasq754(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_seta755(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_seta759(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "seta" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11927,7 +11995,7 @@ fn matches_seta755(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_seta756(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_seta760(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "seta" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11944,7 +12012,7 @@ fn matches_seta756(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_setae757(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setae761(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setae" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11960,7 +12028,7 @@ fn matches_setae757(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setae758(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setae762(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setae" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11977,7 +12045,7 @@ fn matches_setae758(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setb759(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setb763(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -11993,7 +12061,7 @@ fn matches_setb759(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_setb760(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setb764(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12010,7 +12078,7 @@ fn matches_setb760(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_setbe761(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setbe765(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setbe" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12026,7 +12094,7 @@ fn matches_setbe761(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setbe762(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setbe766(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setbe" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12043,7 +12111,7 @@ fn matches_setbe762(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setc763(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setc767(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setc" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12059,7 +12127,7 @@ fn matches_setc763(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_setc764(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setc768(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setc" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12076,7 +12144,7 @@ fn matches_setc764(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_sete765(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sete769(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sete" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12092,7 +12160,7 @@ fn matches_sete765(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_sete766(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sete770(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sete" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12109,7 +12177,7 @@ fn matches_sete766(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_setg767(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setg771(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12125,7 +12193,7 @@ fn matches_setg767(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_setg768(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setg772(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12142,7 +12210,7 @@ fn matches_setg768(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_setge769(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setge773(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setge" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12158,7 +12226,7 @@ fn matches_setge769(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setge770(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setge774(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setge" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12175,7 +12243,7 @@ fn matches_setge770(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setl771(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setl775(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12191,7 +12259,7 @@ fn matches_setl771(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_setl772(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setl776(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12208,7 +12276,7 @@ fn matches_setl772(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_setle773(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setle777(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setle" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12224,7 +12292,7 @@ fn matches_setle773(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setle774(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setle778(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setle" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12241,7 +12309,7 @@ fn matches_setle774(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setna775(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setna779(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setna" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12257,7 +12325,7 @@ fn matches_setna775(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setna776(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setna780(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setna" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12274,7 +12342,7 @@ fn matches_setna776(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setnae777(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setnae781(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setnae" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12290,7 +12358,7 @@ fn matches_setnae777(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_setnae778(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setnae782(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setnae" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12307,7 +12375,7 @@ fn matches_setnae778(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_setnb779(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setnb783(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setnb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12323,7 +12391,7 @@ fn matches_setnb779(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setnb780(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setnb784(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setnb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12340,7 +12408,7 @@ fn matches_setnb780(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setnbe781(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setnbe785(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setnbe" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12356,7 +12424,7 @@ fn matches_setnbe781(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_setnbe782(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setnbe786(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setnbe" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12373,7 +12441,7 @@ fn matches_setnbe782(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_setnc783(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setnc787(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setnc" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12389,7 +12457,7 @@ fn matches_setnc783(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setnc784(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setnc788(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setnc" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12406,7 +12474,7 @@ fn matches_setnc784(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setne785(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setne789(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setne" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12422,7 +12490,7 @@ fn matches_setne785(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setne786(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setne790(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setne" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12439,7 +12507,7 @@ fn matches_setne786(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setng787(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setng791(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setng" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12455,7 +12523,7 @@ fn matches_setng787(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setng788(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setng792(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setng" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12472,7 +12540,7 @@ fn matches_setng788(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setnge789(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setnge793(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setnge" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12488,7 +12556,7 @@ fn matches_setnge789(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_setnge790(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setnge794(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setnge" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12505,7 +12573,7 @@ fn matches_setnge790(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_setnl791(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setnl795(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setnl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12521,7 +12589,7 @@ fn matches_setnl791(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setnl792(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setnl796(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setnl" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12538,7 +12606,7 @@ fn matches_setnl792(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_setnle793(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_setnle797(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "setnle" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12554,7 +12622,39 @@ fn matches_setnle793(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_sldt794(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sgdt798(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sgdt" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_m_of_size(&mut iter, 0)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sgdt".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x0F);
+    instr.write_byte(0x01);
+    instr.write_offset(m, rm.0 as u8, 0 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sidt799(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sidt" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_m_of_size(&mut iter, 0)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sidt".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x0F);
+    instr.write_byte(0x01);
+    instr.write_offset(m, rm.0 as u8, 1 as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sldt800(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sldt" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12570,7 +12670,7 @@ fn matches_sldt794(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_smsw795(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_smsw801(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "smsw" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12586,7 +12686,7 @@ fn matches_smsw795(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_stc796(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_stc802(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "stc" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12597,7 +12697,7 @@ fn matches_stc796(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_std797(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_std803(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "std" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12608,7 +12708,7 @@ fn matches_std797(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sti798(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sti804(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sti" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12619,7 +12719,7 @@ fn matches_sti798(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_stosb799(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_stosb805(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "stosb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12630,7 +12730,7 @@ fn matches_stosb799(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_stosw800(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_stosw806(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "stosw" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12641,7 +12741,7 @@ fn matches_stosw800(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_stosd801(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_stosd807(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "stosd" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12652,7 +12752,7 @@ fn matches_stosd801(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_stosq802(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_stosq808(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "stosq" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12664,7 +12764,7 @@ fn matches_stosq802(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_str803(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_str809(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "str" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12680,7 +12780,7 @@ fn matches_str803(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sub804(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sub810(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12695,7 +12795,7 @@ fn matches_sub804(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sub805(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sub811(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12710,7 +12810,7 @@ fn matches_sub805(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sub806(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sub812(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12725,7 +12825,7 @@ fn matches_sub806(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sub807(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sub813(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12741,7 +12841,7 @@ fn matches_sub807(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sub808(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sub814(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12759,7 +12859,7 @@ fn matches_sub808(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sub809(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sub815(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12778,7 +12878,7 @@ fn matches_sub809(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sub810(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sub816(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -12796,129 +12896,20 @@ fn matches_sub810(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sub811(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 32)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sub".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x81);
-    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
-    instr.write_imm::<i32, [u8; 4]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_sub812(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 32)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sub".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 5 as u8);
-    instr.write_byte(0x81);
-    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
-    instr.write_imm::<i32, [u8; 4]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_sub813(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sub".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x83);
-    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_sub814(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sub".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x83);
-    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_sub815(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sub".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 5 as u8);
-    instr.write_byte(0x83);
-    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_sub816(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("sub".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x28);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_sub817(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
+    let rm = is_rm_of_size(&mut iter, 32)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
+    let imm1 = is_imm_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sub".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, reg as u8);
-    instr.write_byte(0x28);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_byte(0x81);
+    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
+    instr.write_imm::<i32, [u8; 4]>(imm1);
 
     Ok(instr)
 }
@@ -12927,15 +12918,17 @@ fn matches_sub818(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
+    let rm = is_rm_of_size(&mut iter, 64)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 16)?;
+    let imm1 = is_imm_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sub".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x29);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_rex(true, rm.0 as u8, 5 as u8);
+    instr.write_byte(0x81);
+    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
+    instr.write_imm::<i32, [u8; 4]>(imm1);
 
     Ok(instr)
 }
@@ -12944,15 +12937,16 @@ fn matches_sub819(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 32)?;
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sub".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x29);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_byte(0x83);
+    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -12961,16 +12955,16 @@ fn matches_sub820(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 32)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 64)?;
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sub".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, reg as u8);
-    instr.write_byte(0x29);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_byte(0x83);
+    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -12979,15 +12973,17 @@ fn matches_sub821(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
+    let rm = is_rm_of_size(&mut iter, 64)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sub".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x2A);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_rex(true, rm.0 as u8, 5 as u8);
+    instr.write_byte(0x83);
+    instr.write_offset(m, rm.0 as u8, 5 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -12996,15 +12992,14 @@ fn matches_sub822(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("sub".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, reg as u8);
-    instr.write_byte(0x2A);
+    instr.write_byte(0x28);
     instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
 
     Ok(instr)
@@ -13014,6 +13009,111 @@ fn matches_sub823(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sub".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, reg as u8);
+    instr.write_byte(0x28);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sub824(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 16)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sub".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x29);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sub825(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 32)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sub".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x29);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sub826(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 64)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sub".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, reg as u8);
+    instr.write_byte(0x29);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sub827(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let reg = is_reg_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sub".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x2A);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sub828(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let reg = is_reg_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("sub".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, reg as u8);
+    instr.write_byte(0x2A);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_sub829(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let reg = is_reg_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let rm = is_rm_of_size(&mut iter, 16)?;
@@ -13027,7 +13127,7 @@ fn matches_sub823(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sub824(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sub830(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13044,7 +13144,7 @@ fn matches_sub824(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_sub825(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sub831(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sub" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13062,7 +13162,7 @@ fn matches_sub825(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_swapgs826(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_swapgs832(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "swapgs" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13075,7 +13175,7 @@ fn matches_swapgs826(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_syscall827(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_syscall833(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "syscall" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13087,7 +13187,7 @@ fn matches_syscall827(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseE
     Ok(instr)
 }
 
-fn matches_sysenter828(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sysenter834(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sysenter" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13099,7 +13199,7 @@ fn matches_sysenter828(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     Ok(instr)
 }
 
-fn matches_sysexit829(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sysexit835(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sysexit" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13111,7 +13211,7 @@ fn matches_sysexit829(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseE
     Ok(instr)
 }
 
-fn matches_sysexit830(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sysexit836(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sysexit" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13124,7 +13224,7 @@ fn matches_sysexit830(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseE
     Ok(instr)
 }
 
-fn matches_sysret831(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sysret837(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sysret" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13136,7 +13236,7 @@ fn matches_sysret831(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_sysret832(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_sysret838(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "sysret" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13149,7 +13249,7 @@ fn matches_sysret832(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_test833(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_test839(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "test" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13164,7 +13264,7 @@ fn matches_test833(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_test834(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_test840(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "test" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13179,7 +13279,7 @@ fn matches_test834(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_test835(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_test841(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "test" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13194,7 +13294,7 @@ fn matches_test835(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_test836(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_test842(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "test" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13210,7 +13310,7 @@ fn matches_test836(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_test837(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_test843(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "test" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13228,7 +13328,7 @@ fn matches_test837(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_test838(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_test844(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "test" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13247,7 +13347,7 @@ fn matches_test838(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_test839(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_test845(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "test" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13265,7 +13365,7 @@ fn matches_test839(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_test840(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_test846(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "test" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13283,7 +13383,7 @@ fn matches_test840(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_test841(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_test847(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "test" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13302,7 +13402,7 @@ fn matches_test841(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_test842(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_test848(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "test" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13319,7 +13419,7 @@ fn matches_test842(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_test843(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_test849(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "test" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13337,7 +13437,7 @@ fn matches_test843(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_test844(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_test850(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "test" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13354,7 +13454,7 @@ fn matches_test844(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_test845(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_test851(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "test" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13371,7 +13471,7 @@ fn matches_test845(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_test846(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_test852(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "test" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13389,7 +13489,7 @@ fn matches_test846(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_tzcnt847(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_tzcnt853(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "tzcnt" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13408,7 +13508,7 @@ fn matches_tzcnt847(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_tzcnt848(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_tzcnt854(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "tzcnt" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13427,7 +13527,7 @@ fn matches_tzcnt848(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_tzcnt849(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_tzcnt855(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "tzcnt" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13447,7 +13547,7 @@ fn matches_tzcnt849(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_ud0850(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_ud0856(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "ud0" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13459,7 +13559,7 @@ fn matches_ud0850(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_ud1851(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_ud1857(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "ud1" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13477,7 +13577,7 @@ fn matches_ud1851(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_ud2852(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_ud2858(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "ud2" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13489,7 +13589,7 @@ fn matches_ud2852(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_verr853(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_verr859(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "verr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13505,7 +13605,7 @@ fn matches_verr853(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_verw854(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_verw860(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "verw" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13521,7 +13621,7 @@ fn matches_verw854(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_wait855(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_wait861(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "wait" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13532,7 +13632,7 @@ fn matches_wait855(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_fwait856(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_fwait862(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "fwait" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13543,7 +13643,7 @@ fn matches_fwait856(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_wbinvd857(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_wbinvd863(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "wbinvd" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13555,7 +13655,7 @@ fn matches_wbinvd857(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_wrfsbase858(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_wrfsbase864(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "wrfsbase" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13570,7 +13670,7 @@ fn matches_wrfsbase858(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     Ok(instr)
 }
 
-fn matches_wrfsbase859(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_wrfsbase865(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "wrfsbase" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13586,7 +13686,7 @@ fn matches_wrfsbase859(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     Ok(instr)
 }
 
-fn matches_wrgsbase860(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_wrgsbase866(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "wrgsbase" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13601,7 +13701,7 @@ fn matches_wrgsbase860(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     Ok(instr)
 }
 
-fn matches_wrgsbase861(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_wrgsbase867(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "wrgsbase" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13617,7 +13717,7 @@ fn matches_wrgsbase861(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     Ok(instr)
 }
 
-fn matches_wrmsr862(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_wrmsr868(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "wrmsr" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13629,7 +13729,7 @@ fn matches_wrmsr862(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_xabort863(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xabort869(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xabort" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13643,7 +13743,7 @@ fn matches_xabort863(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_xacquire864(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xacquire870(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xacquire" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13654,7 +13754,7 @@ fn matches_xacquire864(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     Ok(instr)
 }
 
-fn matches_xrelease865(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xrelease871(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xrelease" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13665,7 +13765,7 @@ fn matches_xrelease865(tokens: &Vec<Token>) -> Result<Instruction, (usize, Parse
     Ok(instr)
 }
 
-fn matches_xadd866(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xadd872(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xadd" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13683,7 +13783,7 @@ fn matches_xadd866(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_xadd867(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xadd873(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xadd" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13702,7 +13802,7 @@ fn matches_xadd867(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_xadd868(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xadd874(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xadd" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13720,7 +13820,7 @@ fn matches_xadd868(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_xadd869(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xadd875(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xadd" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13738,7 +13838,7 @@ fn matches_xadd869(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_xadd870(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xadd876(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xadd" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13757,7 +13857,7 @@ fn matches_xadd870(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_xbegin871(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xbegin877(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xbegin" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13771,7 +13871,7 @@ fn matches_xbegin871(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_xbegin872(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xbegin878(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xbegin" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -13785,105 +13885,16 @@ fn matches_xbegin872(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseEr
     Ok(instr)
 }
 
-fn matches_xchg873(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    if get_next(&mut iter)? != "ax" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 16)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("xchg".to_string());
-    instr.write_byte(0x90+reg as u8);
-
-    Ok(instr)
-}
-
-fn matches_xchg874(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let reg = is_reg_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "ax" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("xchg".to_string());
-    instr.write_byte(0x90+reg as u8);
-
-    Ok(instr)
-}
-
-fn matches_xchg875(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    if get_next(&mut iter)? != "eax" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 32)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("xchg".to_string());
-    instr.write_byte(0x90+reg as u8);
-
-    Ok(instr)
-}
-
-fn matches_xchg876(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    if get_next(&mut iter)? != "rax" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 64)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("xchg".to_string());
-    instr.write_rex(true, 0 as u8, reg as u8);
-    instr.write_byte(0x90+reg as u8);
-
-    Ok(instr)
-}
-
-fn matches_xchg877(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let reg = is_reg_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "eax" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("xchg".to_string());
-    instr.write_byte(0x90+reg as u8);
-
-    Ok(instr)
-}
-
-fn matches_xchg878(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let reg = is_reg_of_size(&mut iter, 64)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if get_next(&mut iter)? != "rax" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("xchg".to_string());
-    instr.write_rex(true, 0 as u8, reg as u8);
-    instr.write_byte(0x90+reg as u8);
-
-    Ok(instr)
-}
-
 fn matches_xchg879(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "ax" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
+    let reg = is_reg_of_size(&mut iter, 16)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("xchg".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x86);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_byte(0x90+reg as u8);
 
     Ok(instr)
 }
@@ -13892,16 +13903,12 @@ fn matches_xchg880(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
+    let reg = is_reg_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "ax" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("xchg".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, reg as u8);
-    instr.write_byte(0x86);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_byte(0x90+reg as u8);
 
     Ok(instr)
 }
@@ -13910,15 +13917,12 @@ fn matches_xchg881(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "eax" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
+    let reg = is_reg_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("xchg".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x86);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_byte(0x90+reg as u8);
 
     Ok(instr)
 }
@@ -13927,16 +13931,13 @@ fn matches_xchg882(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "rax" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
+    let reg = is_reg_of_size(&mut iter, 64)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("xchg".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, reg as u8);
-    instr.write_byte(0x86);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_rex(true, 0 as u8, reg as u8);
+    instr.write_byte(0x90+reg as u8);
 
     Ok(instr)
 }
@@ -13945,15 +13946,12 @@ fn matches_xchg883(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
+    let reg = is_reg_of_size(&mut iter, 32)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 16)?;
+    if get_next(&mut iter)? != "eax" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("xchg".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x87);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_byte(0x90+reg as u8);
 
     Ok(instr)
 }
@@ -13962,15 +13960,13 @@ fn matches_xchg884(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let reg = is_reg_of_size(&mut iter, 16)?;
+    let reg = is_reg_of_size(&mut iter, 64)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
+    if get_next(&mut iter)? != "rax" { return Err((iter.count(), ParseError::InvalidOperand)); }
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("xchg".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x87);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_rex(true, 0 as u8, reg as u8);
+    instr.write_byte(0x90+reg as u8);
 
     Ok(instr)
 }
@@ -13979,14 +13975,14 @@ fn matches_xchg885(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
+    let rm = is_rm_of_size(&mut iter, 8)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 32)?;
+    let reg = is_reg_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("xchg".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x87);
+    instr.write_byte(0x86);
     instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
 
     Ok(instr)
@@ -13996,6 +13992,110 @@ fn matches_xchg886(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("xchg".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, reg as u8);
+    instr.write_byte(0x86);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_xchg887(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let reg = is_reg_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("xchg".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x86);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_xchg888(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let reg = is_reg_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("xchg".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, reg as u8);
+    instr.write_byte(0x86);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_xchg889(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 16)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("xchg".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x87);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_xchg890(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let reg = is_reg_of_size(&mut iter, 16)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let rm = is_rm_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("xchg".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x87);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_xchg891(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 32)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("xchg".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x87);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_xchg892(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let rm = is_rm_of_size(&mut iter, 64)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let reg = is_reg_of_size(&mut iter, 64)?;
@@ -14010,7 +14110,7 @@ fn matches_xchg886(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_xchg887(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xchg893(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -14027,7 +14127,7 @@ fn matches_xchg887(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_xchg888(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xchg894(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xchg" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -14045,7 +14145,7 @@ fn matches_xchg888(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErro
     Ok(instr)
 }
 
-fn matches_xlatb889(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xlatb895(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xlatb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -14056,7 +14156,7 @@ fn matches_xlatb889(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_xlatb890(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xlatb896(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xlatb" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -14068,7 +14168,7 @@ fn matches_xlatb890(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseErr
     Ok(instr)
 }
 
-fn matches_xor891(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xor897(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -14083,7 +14183,7 @@ fn matches_xor891(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_xor892(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xor898(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -14098,7 +14198,7 @@ fn matches_xor892(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_xor893(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xor899(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -14113,7 +14213,7 @@ fn matches_xor893(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_xor894(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xor900(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -14129,7 +14229,7 @@ fn matches_xor894(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_xor895(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xor901(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -14147,7 +14247,7 @@ fn matches_xor895(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_xor896(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xor902(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -14166,7 +14266,7 @@ fn matches_xor896(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_xor897(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xor903(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -14184,129 +14284,20 @@ fn matches_xor897(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_xor898(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 32)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("xor".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x81);
-    instr.write_offset(m, rm.0 as u8, 6 as u8, rm.2);
-    instr.write_imm::<i32, [u8; 4]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_xor899(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 32)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("xor".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 6 as u8);
-    instr.write_byte(0x81);
-    instr.write_offset(m, rm.0 as u8, 6 as u8, rm.2);
-    instr.write_imm::<i32, [u8; 4]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_xor900(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("xor".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x83);
-    instr.write_offset(m, rm.0 as u8, 6 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_xor901(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("xor".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x83);
-    instr.write_offset(m, rm.0 as u8, 6 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_xor902(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let imm1 = is_imm_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("xor".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, 6 as u8);
-    instr.write_byte(0x83);
-    instr.write_offset(m, rm.0 as u8, 6 as u8, rm.2);
-    instr.write_imm::<i8, [u8; 1]>(imm1);
-
-    Ok(instr)
-}
-
-fn matches_xor903(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
-    let mut iter = tokens.iter();
-    
-    if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
-    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
-    let mut instr = Instruction::new("xor".to_string());
-
-    let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x30);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
-
-    Ok(instr)
-}
-
 fn matches_xor904(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
+    let rm = is_rm_of_size(&mut iter, 32)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
+    let imm1 = is_imm_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("xor".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, reg as u8);
-    instr.write_byte(0x30);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_byte(0x81);
+    instr.write_offset(m, rm.0 as u8, 6 as u8, rm.2);
+    instr.write_imm::<i32, [u8; 4]>(imm1);
 
     Ok(instr)
 }
@@ -14315,15 +14306,17 @@ fn matches_xor905(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 16)?;
+    let rm = is_rm_of_size(&mut iter, 64)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 16)?;
+    let imm1 = is_imm_of_size(&mut iter, 32)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("xor".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x31);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_rex(true, rm.0 as u8, 6 as u8);
+    instr.write_byte(0x81);
+    instr.write_offset(m, rm.0 as u8, 6 as u8, rm.2);
+    instr.write_imm::<i32, [u8; 4]>(imm1);
 
     Ok(instr)
 }
@@ -14332,15 +14325,16 @@ fn matches_xor906(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 32)?;
+    let rm = is_rm_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 32)?;
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("xor".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x31);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_byte(0x83);
+    instr.write_offset(m, rm.0 as u8, 6 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -14349,16 +14343,16 @@ fn matches_xor907(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let rm = is_rm_of_size(&mut iter, 64)?;
+    let rm = is_rm_of_size(&mut iter, 32)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let reg = is_reg_of_size(&mut iter, 64)?;
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("xor".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(true, rm.0 as u8, reg as u8);
-    instr.write_byte(0x31);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_byte(0x83);
+    instr.write_offset(m, rm.0 as u8, 6 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -14367,15 +14361,17 @@ fn matches_xor908(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
+    let rm = is_rm_of_size(&mut iter, 64)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
-    let rm = is_rm_of_size(&mut iter, 8)?;
+    let imm1 = is_imm_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("xor".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_byte(0x32);
-    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+    instr.write_rex(true, rm.0 as u8, 6 as u8);
+    instr.write_byte(0x83);
+    instr.write_offset(m, rm.0 as u8, 6 as u8, rm.2);
+    instr.write_imm::<i8, [u8; 1]>(imm1);
 
     Ok(instr)
 }
@@ -14384,15 +14380,14 @@ fn matches_xor909(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
-    let reg = is_reg_of_size(&mut iter, 8)?;
-    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 8)?;
     if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
     let mut instr = Instruction::new("xor".to_string());
 
     let m = get_mod_from_rm(&rm);
-    instr.write_rex(false, rm.0 as u8, reg as u8);
-    instr.write_byte(0x32);
+    instr.write_byte(0x30);
     instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
 
     Ok(instr)
@@ -14402,6 +14397,111 @@ fn matches_xor910(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("xor".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, reg as u8);
+    instr.write_byte(0x30);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_xor911(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 16)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 16)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("xor".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x31);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_xor912(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 32)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 32)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("xor".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x31);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_xor913(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let rm = is_rm_of_size(&mut iter, 64)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let reg = is_reg_of_size(&mut iter, 64)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("xor".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(true, rm.0 as u8, reg as u8);
+    instr.write_byte(0x31);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_xor914(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let reg = is_reg_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("xor".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_byte(0x32);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_xor915(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
+    let reg = is_reg_of_size(&mut iter, 8)?;
+    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
+    let rm = is_rm_of_size(&mut iter, 8)?;
+    if iter.next().is_some() { return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }
+    let mut instr = Instruction::new("xor".to_string());
+
+    let m = get_mod_from_rm(&rm);
+    instr.write_rex(false, rm.0 as u8, reg as u8);
+    instr.write_byte(0x32);
+    instr.write_offset(m, rm.0 as u8, reg as u8, rm.2);
+
+    Ok(instr)
+}
+
+fn matches_xor916(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+    let mut iter = tokens.iter();
+    
+    if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
     let reg = is_reg_of_size(&mut iter, 16)?;
     if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }
     let rm = is_rm_of_size(&mut iter, 16)?;
@@ -14415,7 +14515,7 @@ fn matches_xor910(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_xor911(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xor917(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -14432,7 +14532,7 @@ fn matches_xor911(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-fn matches_xor912(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
+fn matches_xor918(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut iter = tokens.iter();
     
     if get_next(&mut iter)? != "xor" { return Err((iter.count(), ParseError::InvalidInstruction)); }
@@ -14450,7 +14550,7 @@ fn matches_xor912(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError
     Ok(instr)
 }
 
-const MATCH_FUNCTIONS: [fn(&Vec<Token>) -> Result<Instruction, (usize, ParseError)>; 912] = [matches_aaa1, matches_aad2, matches_aad3, matches_aam4, matches_aam5, matches_aas6, matches_adc7, matches_adc8, matches_adc9, matches_adc10, matches_adc11, matches_adc12, matches_adc13, matches_adc14, matches_adc15, matches_adc16, matches_adc17, matches_adc18, matches_adc19, matches_adc20, matches_adc21, matches_adc22, matches_adc23, matches_adc24, matches_adc25, matches_adc26, matches_adc27, matches_adc28, matches_adcx29, matches_adcx30, matches_add31, matches_add32, matches_add33, matches_add34, matches_add35, matches_add36, matches_add37, matches_add38, matches_add39, matches_add40, matches_add41, matches_add42, matches_add43, matches_add44, matches_add45, matches_add46, matches_add47, matches_add48, matches_add49, matches_add50, matches_add51, matches_add52, matches_adox53, matches_adox54, matches_and55, matches_and56, matches_and57, matches_and58, matches_and59, matches_and60, matches_and61, matches_and62, matches_and63, matches_and64, matches_and65, matches_and66, matches_and67, matches_and68, matches_and69, matches_and70, matches_and71, matches_and72, matches_and73, matches_and74, matches_and75, matches_and76, matches_arpl77, matches_bsf78, matches_bsf79, matches_bsf80, matches_bsr81, matches_bsr82, matches_bsr83, matches_bswap84, matches_bswap85, matches_bt86, matches_bt87, matches_bt88, matches_bt89, matches_bt90, matches_bt91, matches_btc92, matches_btc93, matches_btc94, matches_btc95, matches_btc96, matches_btc97, matches_btr98, matches_btr99, matches_btr100, matches_btr101, matches_btr102, matches_btr103, matches_bts104, matches_bts105, matches_bts106, matches_bts107, matches_bts108, matches_bts109, matches_call110, matches_call111, matches_call112, matches_call113, matches_call114, matches_cbw115, matches_cwde116, matches_cdqe117, matches_clc118, matches_cld119, matches_cli120, matches_clts121, matches_cmc122, matches_cmova123, matches_cmova124, matches_cmova125, matches_cmovae126, matches_cmovae127, matches_cmovae128, matches_cmovb129, matches_cmovb130, matches_cmovb131, matches_cmovbe132, matches_cmovbe133, matches_cmovbe134, matches_cmovc135, matches_cmovc136, matches_cmovc137, matches_cmove138, matches_cmove139, matches_cmove140, matches_cmovg141, matches_cmovg142, matches_cmovg143, matches_cmovge144, matches_cmovge145, matches_cmovge146, matches_cmovl147, matches_cmovl148, matches_cmovl149, matches_cmovle150, matches_cmovle151, matches_cmovle152, matches_cmovna153, matches_cmovna154, matches_cmovna155, matches_cmovnae156, matches_cmovnae157, matches_cmovnae158, matches_cmovnb159, matches_cmovnb160, matches_cmovnb161, matches_cmovnbe162, matches_cmovnbe163, matches_cmovnbe164, matches_cmovnc165, matches_cmovnc166, matches_cmovnc167, matches_cmovne168, matches_cmovne169, matches_cmovne170, matches_cmovng171, matches_cmovng172, matches_cmovng173, matches_cmovnge174, matches_cmovnge175, matches_cmovnge176, matches_cmovnl177, matches_cmovnl178, matches_cmovnl179, matches_cmovnle180, matches_cmovnle181, matches_cmovnle182, matches_cmovno183, matches_cmovno184, matches_cmovno185, matches_cmovnp186, matches_cmovnp187, matches_cmovnp188, matches_cmovns189, matches_cmovns190, matches_cmovns191, matches_cmovnz192, matches_cmovnz193, matches_cmovnz194, matches_cmovo195, matches_cmovo196, matches_cmovo197, matches_cmovp198, matches_cmovp199, matches_cmovp200, matches_cmovpe201, matches_cmovpe202, matches_cmovpe203, matches_cmp204, matches_cmp205, matches_cmp206, matches_cmp207, matches_cmp208, matches_cmp209, matches_cmp210, matches_cmp211, matches_cmp212, matches_cmp213, matches_cmp214, matches_cmp215, matches_cmp216, matches_cmp217, matches_cmp218, matches_cmp219, matches_cmp220, matches_cmp221, matches_cmp222, matches_cmp223, matches_cmp224, matches_cmp225, matches_cmpsb226, matches_cmpsw227, matches_cmpsd228, matches_cmpsq229, matches_cmpxchg230, matches_cmpxchg231, matches_cmpxchg232, matches_cmpxchg233, matches_cmpxchg234, matches_cpuid235, matches_crc32236, matches_crc32237, matches_crc32238, matches_crc32239, matches_crc32240, matches_crc32241, matches_cwd242, matches_cdq243, matches_cqo244, matches_daa245, matches_das246, matches_dec247, matches_dec248, matches_dec249, matches_dec250, matches_dec251, matches_dec252, matches_dec253, matches_div254, matches_div255, matches_div256, matches_div257, matches_div258, matches_enter259, matches_enter260, matches_enter261, matches_f2xm1262, matches_fabs263, matches_faddp264, matches_fchs265, matches_fclex266, matches_fnclex267, matches_fcom268, matches_fcomp269, matches_fcompp270, matches_fcos271, matches_fdecstp272, matches_fdivp273, matches_fdivrp274, matches_fincstp275, matches_finit276, matches_fninit277, matches_fld1278, matches_fldl2t279, matches_fldl2e280, matches_fldpi281, matches_fldlg2282, matches_fldln2283, matches_fldz284, matches_fmulp285, matches_fnop286, matches_fpatan287, matches_fprem288, matches_fprem1289, matches_fptan290, matches_frndint291, matches_fscale292, matches_fsin293, matches_fsincos294, matches_fsqrt295, matches_fstsw296, matches_fnstsw297, matches_fsubp298, matches_fsubrp299, matches_ftst300, matches_fucom301, matches_fucomp302, matches_fucompp303, matches_fxam304, matches_fxch305, matches_fxtract306, matches_fyl2x307, matches_fyl2xp1308, matches_hlt309, matches_idiv310, matches_idiv311, matches_idiv312, matches_idiv313, matches_idiv314, matches_imul315, matches_imul316, matches_imul317, matches_imul318, matches_imul319, matches_imul320, matches_imul321, matches_in322, matches_in323, matches_in324, matches_in325, matches_in326, matches_in327, matches_inc328, matches_inc329, matches_inc330, matches_inc331, matches_inc332, matches_inc333, matches_inc334, matches_insb335, matches_insw336, matches_insd337, matches_int338, matches_into339, matches_invd340, matches_iret341, matches_iretd342, matches_iretq343, matches_ja344, matches_jae345, matches_jb346, matches_jbe347, matches_jc348, matches_jcxz349, matches_jecxz350, matches_jrcxz351, matches_je352, matches_jg353, matches_jge354, matches_jl355, matches_jle356, matches_jna357, matches_jnae358, matches_jnb359, matches_jnbe360, matches_jnc361, matches_jne362, matches_jng363, matches_jnge364, matches_jnl365, matches_jnle366, matches_jno367, matches_jnp368, matches_jns369, matches_jnz370, matches_jo371, matches_jp372, matches_jpe373, matches_jpo374, matches_js375, matches_jz376, matches_ja377, matches_ja378, matches_jae379, matches_jae380, matches_jb381, matches_jb382, matches_jbe383, matches_jbe384, matches_jc385, matches_jc386, matches_je387, matches_je388, matches_jz389, matches_jz390, matches_jg391, matches_jg392, matches_jge393, matches_jge394, matches_jl395, matches_jl396, matches_jle397, matches_jle398, matches_jna399, matches_jna400, matches_jnae401, matches_jnae402, matches_jnb403, matches_jnb404, matches_jnbe405, matches_jnbe406, matches_jnc407, matches_jnc408, matches_jne409, matches_jne410, matches_jng411, matches_jng412, matches_jnge413, matches_jnge414, matches_jnl415, matches_jnl416, matches_jnle417, matches_jnle418, matches_jno419, matches_jno420, matches_jnp421, matches_jnp422, matches_jns423, matches_jns424, matches_jnz425, matches_jnz426, matches_jo427, matches_jo428, matches_jp429, matches_jp430, matches_jpe431, matches_jpe432, matches_jpo433, matches_jpo434, matches_js435, matches_jmp436, matches_jmp437, matches_jmp438, matches_jmp439, matches_jmp440, matches_jmp441, matches_lahf442, matches_leave443, matches_leave444, matches_leave445, matches_lldt446, matches_lmsw447, matches_lock448, matches_lodsb449, matches_lodsw450, matches_lodsd451, matches_lodsq452, matches_loop453, matches_loope454, matches_loopne455, matches_ltr456, matches_lzcnt457, matches_lzcnt458, matches_lzcnt459, matches_monitor460, matches_mov461, matches_mov462, matches_mov463, matches_mov464, matches_mov465, matches_mov466, matches_mov467, matches_mov468, matches_mov469, matches_mov470, matches_mov471, matches_mov472, matches_mov473, matches_mov474, matches_mov475, matches_mov476, matches_mov477, matches_mov478, matches_mov479, matches_mov480, matches_movsb481, matches_movsw482, matches_movsd483, matches_movsq484, matches_movsx485, matches_movsx486, matches_movsx487, matches_movsx488, matches_movsx489, matches_movsxd490, matches_movzx491, matches_movzx492, matches_movzx493, matches_movzx494, matches_movzx495, matches_mul496, matches_mul497, matches_mul498, matches_mul499, matches_mul500, matches_mwait501, matches_neg502, matches_neg503, matches_neg504, matches_neg505, matches_neg506, matches_not507, matches_not508, matches_not509, matches_not510, matches_not511, matches_or512, matches_or513, matches_or514, matches_or515, matches_or516, matches_or517, matches_or518, matches_or519, matches_or520, matches_or521, matches_or522, matches_or523, matches_or524, matches_or525, matches_or526, matches_or527, matches_or528, matches_or529, matches_or530, matches_or531, matches_or532, matches_or533, matches_out534, matches_out535, matches_out536, matches_out537, matches_out538, matches_out539, matches_outsb540, matches_outsw541, matches_outsd542, matches_pause543, matches_pop544, matches_pop545, matches_pop546, matches_pop547, matches_pop548, matches_pop549, matches_pop550, matches_pop551, matches_pop552, matches_pop553, matches_pop554, matches_pop555, matches_pop556, matches_pop557, matches_pop558, matches_popa559, matches_popad560, matches_popcnt561, matches_popcnt562, matches_popcnt563, matches_popf564, matches_popfd565, matches_popfq566, matches_push567, matches_push568, matches_push569, matches_push570, matches_push571, matches_push572, matches_push573, matches_push574, matches_push575, matches_push576, matches_push577, matches_push578, matches_push579, matches_push580, matches_push581, matches_pusha582, matches_pushad583, matches_pushf584, matches_pushfd585, matches_pushfq586, matches_rcl587, matches_rcl588, matches_rcl589, matches_rcl590, matches_rcl591, matches_rcl592, matches_rcl593, matches_rcl594, matches_rcl595, matches_rcl596, matches_rcl597, matches_rcl598, matches_rcl599, matches_rcl600, matches_rcl601, matches_rcr602, matches_rcr603, matches_rcr604, matches_rcr605, matches_rcr606, matches_rcr607, matches_rcr608, matches_rcr609, matches_rcr610, matches_rcr611, matches_rcr612, matches_rcr613, matches_rcr614, matches_rcr615, matches_rcr616, matches_rol617, matches_rol618, matches_rol619, matches_rol620, matches_rol621, matches_rol622, matches_rol623, matches_rol624, matches_rol625, matches_rol626, matches_rol627, matches_rol628, matches_rol629, matches_rol630, matches_rol631, matches_ror632, matches_ror633, matches_ror634, matches_ror635, matches_ror636, matches_ror637, matches_ror638, matches_ror639, matches_ror640, matches_ror641, matches_ror642, matches_ror643, matches_ror644, matches_ror645, matches_ror646, matches_rdfsbase647, matches_rdfsbase648, matches_rdgsbase649, matches_rdgsbase650, matches_rdmsr651, matches_rdpid652, matches_rdpid653, matches_rdpmc654, matches_rdrand655, matches_rdrand656, matches_rdrand657, matches_rdseed658, matches_rdseed659, matches_rdseed660, matches_rdtsc661, matches_rdtscp662, matches_ret663, matches_retf664, matches_ret665, matches_ret666, matches_rsm667, matches_sahf668, matches_sal669, matches_sal670, matches_sal671, matches_sal672, matches_sal673, matches_sal674, matches_sal675, matches_sal676, matches_sal677, matches_sal678, matches_sal679, matches_sal680, matches_sal681, matches_sal682, matches_sal683, matches_sar684, matches_sar685, matches_sar686, matches_sar687, matches_sar688, matches_sar689, matches_sar690, matches_sar691, matches_sar692, matches_sar693, matches_sar694, matches_sar695, matches_sar696, matches_sar697, matches_sar698, matches_shl699, matches_shl700, matches_shl701, matches_shl702, matches_shl703, matches_shl704, matches_shl705, matches_shl706, matches_shl707, matches_shl708, matches_shl709, matches_shl710, matches_shl711, matches_shl712, matches_shl713, matches_shr714, matches_shr715, matches_shr716, matches_shr717, matches_shr718, matches_shr719, matches_shr720, matches_shr721, matches_shr722, matches_shr723, matches_shr724, matches_shr725, matches_shr726, matches_shr727, matches_shr728, matches_sbb729, matches_sbb730, matches_sbb731, matches_sbb732, matches_sbb733, matches_sbb734, matches_sbb735, matches_sbb736, matches_sbb737, matches_sbb738, matches_sbb739, matches_sbb740, matches_sbb741, matches_sbb742, matches_sbb743, matches_sbb744, matches_sbb745, matches_sbb746, matches_sbb747, matches_sbb748, matches_sbb749, matches_sbb750, matches_scasb751, matches_scasw752, matches_scasd753, matches_scasq754, matches_seta755, matches_seta756, matches_setae757, matches_setae758, matches_setb759, matches_setb760, matches_setbe761, matches_setbe762, matches_setc763, matches_setc764, matches_sete765, matches_sete766, matches_setg767, matches_setg768, matches_setge769, matches_setge770, matches_setl771, matches_setl772, matches_setle773, matches_setle774, matches_setna775, matches_setna776, matches_setnae777, matches_setnae778, matches_setnb779, matches_setnb780, matches_setnbe781, matches_setnbe782, matches_setnc783, matches_setnc784, matches_setne785, matches_setne786, matches_setng787, matches_setng788, matches_setnge789, matches_setnge790, matches_setnl791, matches_setnl792, matches_setnle793, matches_sldt794, matches_smsw795, matches_stc796, matches_std797, matches_sti798, matches_stosb799, matches_stosw800, matches_stosd801, matches_stosq802, matches_str803, matches_sub804, matches_sub805, matches_sub806, matches_sub807, matches_sub808, matches_sub809, matches_sub810, matches_sub811, matches_sub812, matches_sub813, matches_sub814, matches_sub815, matches_sub816, matches_sub817, matches_sub818, matches_sub819, matches_sub820, matches_sub821, matches_sub822, matches_sub823, matches_sub824, matches_sub825, matches_swapgs826, matches_syscall827, matches_sysenter828, matches_sysexit829, matches_sysexit830, matches_sysret831, matches_sysret832, matches_test833, matches_test834, matches_test835, matches_test836, matches_test837, matches_test838, matches_test839, matches_test840, matches_test841, matches_test842, matches_test843, matches_test844, matches_test845, matches_test846, matches_tzcnt847, matches_tzcnt848, matches_tzcnt849, matches_ud0850, matches_ud1851, matches_ud2852, matches_verr853, matches_verw854, matches_wait855, matches_fwait856, matches_wbinvd857, matches_wrfsbase858, matches_wrfsbase859, matches_wrgsbase860, matches_wrgsbase861, matches_wrmsr862, matches_xabort863, matches_xacquire864, matches_xrelease865, matches_xadd866, matches_xadd867, matches_xadd868, matches_xadd869, matches_xadd870, matches_xbegin871, matches_xbegin872, matches_xchg873, matches_xchg874, matches_xchg875, matches_xchg876, matches_xchg877, matches_xchg878, matches_xchg879, matches_xchg880, matches_xchg881, matches_xchg882, matches_xchg883, matches_xchg884, matches_xchg885, matches_xchg886, matches_xchg887, matches_xchg888, matches_xlatb889, matches_xlatb890, matches_xor891, matches_xor892, matches_xor893, matches_xor894, matches_xor895, matches_xor896, matches_xor897, matches_xor898, matches_xor899, matches_xor900, matches_xor901, matches_xor902, matches_xor903, matches_xor904, matches_xor905, matches_xor906, matches_xor907, matches_xor908, matches_xor909, matches_xor910, matches_xor911, matches_xor912];
+const MATCH_FUNCTIONS: [fn(&Vec<Token>) -> Result<Instruction, (usize, ParseError)>; 918] = [matches_aaa1, matches_aad2, matches_aad3, matches_aam4, matches_aam5, matches_aas6, matches_adc7, matches_adc8, matches_adc9, matches_adc10, matches_adc11, matches_adc12, matches_adc13, matches_adc14, matches_adc15, matches_adc16, matches_adc17, matches_adc18, matches_adc19, matches_adc20, matches_adc21, matches_adc22, matches_adc23, matches_adc24, matches_adc25, matches_adc26, matches_adc27, matches_adc28, matches_adcx29, matches_adcx30, matches_add31, matches_add32, matches_add33, matches_add34, matches_add35, matches_add36, matches_add37, matches_add38, matches_add39, matches_add40, matches_add41, matches_add42, matches_add43, matches_add44, matches_add45, matches_add46, matches_add47, matches_add48, matches_add49, matches_add50, matches_add51, matches_add52, matches_adox53, matches_adox54, matches_and55, matches_and56, matches_and57, matches_and58, matches_and59, matches_and60, matches_and61, matches_and62, matches_and63, matches_and64, matches_and65, matches_and66, matches_and67, matches_and68, matches_and69, matches_and70, matches_and71, matches_and72, matches_and73, matches_and74, matches_and75, matches_and76, matches_arpl77, matches_bsf78, matches_bsf79, matches_bsf80, matches_bsr81, matches_bsr82, matches_bsr83, matches_bswap84, matches_bswap85, matches_bt86, matches_bt87, matches_bt88, matches_bt89, matches_bt90, matches_bt91, matches_btc92, matches_btc93, matches_btc94, matches_btc95, matches_btc96, matches_btc97, matches_btr98, matches_btr99, matches_btr100, matches_btr101, matches_btr102, matches_btr103, matches_bts104, matches_bts105, matches_bts106, matches_bts107, matches_bts108, matches_bts109, matches_call110, matches_call111, matches_call112, matches_call113, matches_call114, matches_cbw115, matches_cwde116, matches_cdqe117, matches_clc118, matches_cld119, matches_cli120, matches_clts121, matches_cmc122, matches_cmova123, matches_cmova124, matches_cmova125, matches_cmovae126, matches_cmovae127, matches_cmovae128, matches_cmovb129, matches_cmovb130, matches_cmovb131, matches_cmovbe132, matches_cmovbe133, matches_cmovbe134, matches_cmovc135, matches_cmovc136, matches_cmovc137, matches_cmove138, matches_cmove139, matches_cmove140, matches_cmovg141, matches_cmovg142, matches_cmovg143, matches_cmovge144, matches_cmovge145, matches_cmovge146, matches_cmovl147, matches_cmovl148, matches_cmovl149, matches_cmovle150, matches_cmovle151, matches_cmovle152, matches_cmovna153, matches_cmovna154, matches_cmovna155, matches_cmovnae156, matches_cmovnae157, matches_cmovnae158, matches_cmovnb159, matches_cmovnb160, matches_cmovnb161, matches_cmovnbe162, matches_cmovnbe163, matches_cmovnbe164, matches_cmovnc165, matches_cmovnc166, matches_cmovnc167, matches_cmovne168, matches_cmovne169, matches_cmovne170, matches_cmovng171, matches_cmovng172, matches_cmovng173, matches_cmovnge174, matches_cmovnge175, matches_cmovnge176, matches_cmovnl177, matches_cmovnl178, matches_cmovnl179, matches_cmovnle180, matches_cmovnle181, matches_cmovnle182, matches_cmovno183, matches_cmovno184, matches_cmovno185, matches_cmovnp186, matches_cmovnp187, matches_cmovnp188, matches_cmovns189, matches_cmovns190, matches_cmovns191, matches_cmovnz192, matches_cmovnz193, matches_cmovnz194, matches_cmovo195, matches_cmovo196, matches_cmovo197, matches_cmovp198, matches_cmovp199, matches_cmovp200, matches_cmovpe201, matches_cmovpe202, matches_cmovpe203, matches_cmp204, matches_cmp205, matches_cmp206, matches_cmp207, matches_cmp208, matches_cmp209, matches_cmp210, matches_cmp211, matches_cmp212, matches_cmp213, matches_cmp214, matches_cmp215, matches_cmp216, matches_cmp217, matches_cmp218, matches_cmp219, matches_cmp220, matches_cmp221, matches_cmp222, matches_cmp223, matches_cmp224, matches_cmp225, matches_cmpsb226, matches_cmpsw227, matches_cmpsd228, matches_cmpsq229, matches_cmpxchg230, matches_cmpxchg231, matches_cmpxchg232, matches_cmpxchg233, matches_cmpxchg234, matches_cpuid235, matches_crc32236, matches_crc32237, matches_crc32238, matches_crc32239, matches_crc32240, matches_crc32241, matches_cwd242, matches_cdq243, matches_cqo244, matches_daa245, matches_das246, matches_dec247, matches_dec248, matches_dec249, matches_dec250, matches_dec251, matches_dec252, matches_dec253, matches_div254, matches_div255, matches_div256, matches_div257, matches_div258, matches_enter259, matches_enter260, matches_enter261, matches_f2xm1262, matches_fabs263, matches_faddp264, matches_fchs265, matches_fclex266, matches_fnclex267, matches_fcom268, matches_fcomp269, matches_fcompp270, matches_fcos271, matches_fdecstp272, matches_fdivp273, matches_fdivrp274, matches_fincstp275, matches_finit276, matches_fninit277, matches_fld1278, matches_fldl2t279, matches_fldl2e280, matches_fldpi281, matches_fldlg2282, matches_fldln2283, matches_fldz284, matches_fmulp285, matches_fnop286, matches_fpatan287, matches_fprem288, matches_fprem1289, matches_fptan290, matches_frndint291, matches_fscale292, matches_fsin293, matches_fsincos294, matches_fsqrt295, matches_fstsw296, matches_fnstsw297, matches_fsubp298, matches_fsubrp299, matches_ftst300, matches_fucom301, matches_fucomp302, matches_fucompp303, matches_fxam304, matches_fxch305, matches_fxtract306, matches_fyl2x307, matches_fyl2xp1308, matches_hlt309, matches_idiv310, matches_idiv311, matches_idiv312, matches_idiv313, matches_idiv314, matches_imul315, matches_imul316, matches_imul317, matches_imul318, matches_imul319, matches_imul320, matches_imul321, matches_in322, matches_in323, matches_in324, matches_in325, matches_in326, matches_in327, matches_inc328, matches_inc329, matches_inc330, matches_inc331, matches_inc332, matches_inc333, matches_inc334, matches_insb335, matches_insw336, matches_insd337, matches_int338, matches_into339, matches_invd340, matches_invlpg341, matches_iret342, matches_iretd343, matches_iretq344, matches_ja345, matches_jae346, matches_jb347, matches_jbe348, matches_jc349, matches_jcxz350, matches_jecxz351, matches_jrcxz352, matches_je353, matches_jg354, matches_jge355, matches_jl356, matches_jle357, matches_jna358, matches_jnae359, matches_jnb360, matches_jnbe361, matches_jnc362, matches_jne363, matches_jng364, matches_jnge365, matches_jnl366, matches_jnle367, matches_jno368, matches_jnp369, matches_jns370, matches_jnz371, matches_jo372, matches_jp373, matches_jpe374, matches_jpo375, matches_js376, matches_jz377, matches_ja378, matches_ja379, matches_jae380, matches_jae381, matches_jb382, matches_jb383, matches_jbe384, matches_jbe385, matches_jc386, matches_jc387, matches_je388, matches_je389, matches_jz390, matches_jz391, matches_jg392, matches_jg393, matches_jge394, matches_jge395, matches_jl396, matches_jl397, matches_jle398, matches_jle399, matches_jna400, matches_jna401, matches_jnae402, matches_jnae403, matches_jnb404, matches_jnb405, matches_jnbe406, matches_jnbe407, matches_jnc408, matches_jnc409, matches_jne410, matches_jne411, matches_jng412, matches_jng413, matches_jnge414, matches_jnge415, matches_jnl416, matches_jnl417, matches_jnle418, matches_jnle419, matches_jno420, matches_jno421, matches_jnp422, matches_jnp423, matches_jns424, matches_jns425, matches_jnz426, matches_jnz427, matches_jo428, matches_jo429, matches_jp430, matches_jp431, matches_jpe432, matches_jpe433, matches_jpo434, matches_jpo435, matches_js436, matches_jmp437, matches_jmp438, matches_jmp439, matches_jmp440, matches_jmp441, matches_jmp442, matches_lahf443, matches_lea444, matches_lea445, matches_lea446, matches_leave447, matches_leave448, matches_leave449, matches_lldt450, matches_lmsw451, matches_lock452, matches_lodsb453, matches_lodsw454, matches_lodsd455, matches_lodsq456, matches_loop457, matches_loope458, matches_loopne459, matches_ltr460, matches_lzcnt461, matches_lzcnt462, matches_lzcnt463, matches_monitor464, matches_mov465, matches_mov466, matches_mov467, matches_mov468, matches_mov469, matches_mov470, matches_mov471, matches_mov472, matches_mov473, matches_mov474, matches_mov475, matches_mov476, matches_mov477, matches_mov478, matches_mov479, matches_mov480, matches_mov481, matches_mov482, matches_mov483, matches_mov484, matches_movsb485, matches_movsw486, matches_movsd487, matches_movsq488, matches_movsx489, matches_movsx490, matches_movsx491, matches_movsx492, matches_movsx493, matches_movsxd494, matches_movzx495, matches_movzx496, matches_movzx497, matches_movzx498, matches_movzx499, matches_mul500, matches_mul501, matches_mul502, matches_mul503, matches_mul504, matches_mwait505, matches_neg506, matches_neg507, matches_neg508, matches_neg509, matches_neg510, matches_not511, matches_not512, matches_not513, matches_not514, matches_not515, matches_or516, matches_or517, matches_or518, matches_or519, matches_or520, matches_or521, matches_or522, matches_or523, matches_or524, matches_or525, matches_or526, matches_or527, matches_or528, matches_or529, matches_or530, matches_or531, matches_or532, matches_or533, matches_or534, matches_or535, matches_or536, matches_or537, matches_out538, matches_out539, matches_out540, matches_out541, matches_out542, matches_out543, matches_outsb544, matches_outsw545, matches_outsd546, matches_pause547, matches_pop548, matches_pop549, matches_pop550, matches_pop551, matches_pop552, matches_pop553, matches_pop554, matches_pop555, matches_pop556, matches_pop557, matches_pop558, matches_pop559, matches_pop560, matches_pop561, matches_pop562, matches_popa563, matches_popad564, matches_popcnt565, matches_popcnt566, matches_popcnt567, matches_popf568, matches_popfd569, matches_popfq570, matches_push571, matches_push572, matches_push573, matches_push574, matches_push575, matches_push576, matches_push577, matches_push578, matches_push579, matches_push580, matches_push581, matches_push582, matches_push583, matches_push584, matches_push585, matches_pusha586, matches_pushad587, matches_pushf588, matches_pushfd589, matches_pushfq590, matches_rcl591, matches_rcl592, matches_rcl593, matches_rcl594, matches_rcl595, matches_rcl596, matches_rcl597, matches_rcl598, matches_rcl599, matches_rcl600, matches_rcl601, matches_rcl602, matches_rcl603, matches_rcl604, matches_rcl605, matches_rcr606, matches_rcr607, matches_rcr608, matches_rcr609, matches_rcr610, matches_rcr611, matches_rcr612, matches_rcr613, matches_rcr614, matches_rcr615, matches_rcr616, matches_rcr617, matches_rcr618, matches_rcr619, matches_rcr620, matches_rol621, matches_rol622, matches_rol623, matches_rol624, matches_rol625, matches_rol626, matches_rol627, matches_rol628, matches_rol629, matches_rol630, matches_rol631, matches_rol632, matches_rol633, matches_rol634, matches_rol635, matches_ror636, matches_ror637, matches_ror638, matches_ror639, matches_ror640, matches_ror641, matches_ror642, matches_ror643, matches_ror644, matches_ror645, matches_ror646, matches_ror647, matches_ror648, matches_ror649, matches_ror650, matches_rdfsbase651, matches_rdfsbase652, matches_rdgsbase653, matches_rdgsbase654, matches_rdmsr655, matches_rdpid656, matches_rdpid657, matches_rdpmc658, matches_rdrand659, matches_rdrand660, matches_rdrand661, matches_rdseed662, matches_rdseed663, matches_rdseed664, matches_rdtsc665, matches_rdtscp666, matches_ret667, matches_retf668, matches_ret669, matches_ret670, matches_rsm671, matches_sahf672, matches_sal673, matches_sal674, matches_sal675, matches_sal676, matches_sal677, matches_sal678, matches_sal679, matches_sal680, matches_sal681, matches_sal682, matches_sal683, matches_sal684, matches_sal685, matches_sal686, matches_sal687, matches_sar688, matches_sar689, matches_sar690, matches_sar691, matches_sar692, matches_sar693, matches_sar694, matches_sar695, matches_sar696, matches_sar697, matches_sar698, matches_sar699, matches_sar700, matches_sar701, matches_sar702, matches_shl703, matches_shl704, matches_shl705, matches_shl706, matches_shl707, matches_shl708, matches_shl709, matches_shl710, matches_shl711, matches_shl712, matches_shl713, matches_shl714, matches_shl715, matches_shl716, matches_shl717, matches_shr718, matches_shr719, matches_shr720, matches_shr721, matches_shr722, matches_shr723, matches_shr724, matches_shr725, matches_shr726, matches_shr727, matches_shr728, matches_shr729, matches_shr730, matches_shr731, matches_shr732, matches_sbb733, matches_sbb734, matches_sbb735, matches_sbb736, matches_sbb737, matches_sbb738, matches_sbb739, matches_sbb740, matches_sbb741, matches_sbb742, matches_sbb743, matches_sbb744, matches_sbb745, matches_sbb746, matches_sbb747, matches_sbb748, matches_sbb749, matches_sbb750, matches_sbb751, matches_sbb752, matches_sbb753, matches_sbb754, matches_scasb755, matches_scasw756, matches_scasd757, matches_scasq758, matches_seta759, matches_seta760, matches_setae761, matches_setae762, matches_setb763, matches_setb764, matches_setbe765, matches_setbe766, matches_setc767, matches_setc768, matches_sete769, matches_sete770, matches_setg771, matches_setg772, matches_setge773, matches_setge774, matches_setl775, matches_setl776, matches_setle777, matches_setle778, matches_setna779, matches_setna780, matches_setnae781, matches_setnae782, matches_setnb783, matches_setnb784, matches_setnbe785, matches_setnbe786, matches_setnc787, matches_setnc788, matches_setne789, matches_setne790, matches_setng791, matches_setng792, matches_setnge793, matches_setnge794, matches_setnl795, matches_setnl796, matches_setnle797, matches_sgdt798, matches_sidt799, matches_sldt800, matches_smsw801, matches_stc802, matches_std803, matches_sti804, matches_stosb805, matches_stosw806, matches_stosd807, matches_stosq808, matches_str809, matches_sub810, matches_sub811, matches_sub812, matches_sub813, matches_sub814, matches_sub815, matches_sub816, matches_sub817, matches_sub818, matches_sub819, matches_sub820, matches_sub821, matches_sub822, matches_sub823, matches_sub824, matches_sub825, matches_sub826, matches_sub827, matches_sub828, matches_sub829, matches_sub830, matches_sub831, matches_swapgs832, matches_syscall833, matches_sysenter834, matches_sysexit835, matches_sysexit836, matches_sysret837, matches_sysret838, matches_test839, matches_test840, matches_test841, matches_test842, matches_test843, matches_test844, matches_test845, matches_test846, matches_test847, matches_test848, matches_test849, matches_test850, matches_test851, matches_test852, matches_tzcnt853, matches_tzcnt854, matches_tzcnt855, matches_ud0856, matches_ud1857, matches_ud2858, matches_verr859, matches_verw860, matches_wait861, matches_fwait862, matches_wbinvd863, matches_wrfsbase864, matches_wrfsbase865, matches_wrgsbase866, matches_wrgsbase867, matches_wrmsr868, matches_xabort869, matches_xacquire870, matches_xrelease871, matches_xadd872, matches_xadd873, matches_xadd874, matches_xadd875, matches_xadd876, matches_xbegin877, matches_xbegin878, matches_xchg879, matches_xchg880, matches_xchg881, matches_xchg882, matches_xchg883, matches_xchg884, matches_xchg885, matches_xchg886, matches_xchg887, matches_xchg888, matches_xchg889, matches_xchg890, matches_xchg891, matches_xchg892, matches_xchg893, matches_xchg894, matches_xlatb895, matches_xlatb896, matches_xor897, matches_xor898, matches_xor899, matches_xor900, matches_xor901, matches_xor902, matches_xor903, matches_xor904, matches_xor905, matches_xor906, matches_xor907, matches_xor908, matches_xor909, matches_xor910, matches_xor911, matches_xor912, matches_xor913, matches_xor914, matches_xor915, matches_xor916, matches_xor917, matches_xor918];
 
 pub fn matches(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {
     let mut err: (usize, ParseError) = (tokens.len() - 1, ParseError::InvalidInstruction);

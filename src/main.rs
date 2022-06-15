@@ -5,9 +5,7 @@ extern crate enum_derive;
 
 use crate::assembler::{Module, ObjectFileType};
 use crate::parse::parser::parse_lines;
-use object::{Object, ObjectSymbol};
 use std::ffi::OsStr;
-use std::fs;
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
@@ -39,7 +37,7 @@ fn main() {
 
             let out_name = path.with_extension("o");
 
-            module.write_to_file(out_name, ObjectFileType::Elf).expect("Couldn't write module");
+            module.write_to_file(out_name, ObjectFileType::MachO).expect("Couldn't write module");
         } else {
             exit(1);
         }

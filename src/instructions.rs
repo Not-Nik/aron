@@ -1,6 +1,7 @@
 // aron (c) Nikolas Wipper 2022
 
 use crate::number::Number;
+use crate::parse::helpers::{Immediate, ImmediateType, Relativity};
 use std::fmt::{Debug, Formatter};
 use std::io::Write;
 use std::str::FromStr;
@@ -24,6 +25,7 @@ pub enum Register {
     R13,
     R14,
     R15,
+    Rip = 0xFF,
 }
 
 impl FromStr for Register {
@@ -62,6 +64,8 @@ impl FromStr for Register {
             Ok(R14)
         } else if ["r15b", "r15w", "r15d", "r15"].contains(&s) {
             Ok(R15)
+        } else if ["rip", "eip", "ip"].contains(&s) {
+            Ok(Rip)
         } else {
             Err(())
         }
@@ -76,8 +80,8 @@ pub enum Mod {
     NoDereference = 0b11,
 }
 
-use crate::parse::helpers::Immediate;
 use Mod::*;
+use crate::parse::helpers::Relativity::RipRelative;
 
 #[derive(PartialEq, Eq, PartialOrd, Copy, Clone)]
 pub enum Size {
@@ -127,7 +131,7 @@ pub struct Instruction {
 pub struct Reference {
     pub to: String,
     pub at: usize,
-    pub rel: bool
+    pub rel: Relativity,
 }
 
 pub struct Instruction {
@@ -168,39 +172,44 @@ impl Instruction {
     }
 
     pub fn write_imm<I: Number<Output = O> + From<i8> + TryFrom<i32>, O: AsRef<[u8]>>(&mut self, imm: Immediate) {
-        match imm {
-            Immediate::Integer(i) => {
+        let at = self.bytes.len();
+        match imm.typ {
+            ImmediateType::Integer(i) => {
                 let r = i.try_into();
                 if r.is_err() {
                     panic!("imm write err");
                 }
                 self.write_num::<I, O>(unsafe { r.unwrap_unchecked() });
             }
-            Immediate::Reference(r, rel) => {
-                let at = self.bytes.len();
+            ImmediateType::Reference(r) => {
                 self.write_num::<I, O>(0.into());
-                self.refs.push(Reference { to: r, at, rel });
+                self.refs.push(Reference { to: r, at, rel: imm.rel });
             }
         }
     }
 
-    pub fn write_rex(&mut self, w: bool, rm: u8, reg: u8) {
+    pub fn write_rex(&mut self, w: bool, mut rm: u8, mut reg: u8) {
+        if rm == 0xFF { rm = 0; }
+        if reg == 0xFF { reg = 0; }
+
         let rm_bw: u8 = (rm & 0b1000) >> 1;
         let reg_bw: u8 = (reg & 0b1000) >> 3;
         let rex: u8 = 0b01000000 | (w as u8) << 3 | rm_bw | reg_bw;
         self.write_byte(rex);
     }
 
-    pub fn write_mod(&mut self, r#mod: Mod, rm: u8, reg: u8) {
+    fn write_mod(&mut self, r#mod: Mod, rm: u8, reg: u8) {
         let mod_rm = (r#mod as u8) << 6 | ((reg & 0b111) << 3) | (rm & 0b111);
         self.write_byte(mod_rm);
     }
 
-    pub fn write_offset(&mut self, m: Mod, rm: u8, reg: u8, off: Option<Immediate>) {
+    pub fn write_offset(&mut self, m: Mod, mut rm: u8, mut reg: u8, off: Option<Immediate>) {
+        if rm == 0xFF { rm = 5; }
+        if reg == 0xFF { reg = 0; }
         self.write_mod(m, rm, reg);
 
         if let Some(off) = off {
-            if m == Offset32Bit {
+            if m == Offset32Bit || off.rel == RipRelative {
                 self.write_imm::<i32, [u8; 4]>(off);
             } else if m == Offset8Bit {
                 self.write_imm::<i8, [u8; 1]>(off);

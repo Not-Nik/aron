@@ -44,6 +44,9 @@ class Operand:
         if self.raw:
             return int(self.raw[3:])
 
+    def is_m(self) -> bool:
+        return self.raw and self.raw == "m"
+
 
 class InstructionTemplate:
     def __init__(self, opcode, name, op1, op2):
@@ -72,12 +75,12 @@ def main():
         if "NP" in opc or "VEX" in opc:
             continue
 
-        unsupported_op_types = ["bnd", "bnd1", "bnd1/m64", "bnd1/m128", "CR0-CR7", "CR8", "DR0-DR7", "k1", "m", "mem",
-                                "mm", "mm1", "moffs8","moffs16", "moffs32", "moffs64", "m8", "m16", "m16int", "m2byte",
-                                "m32", "m32fp", "m32int", "m512", "m512byte", "m64", "m64f", "m64fp", "m64int",
-                                "m80bcd", "m80dec", "m80fp", "m128", "m14/28byte", "m16:16", "m16:32", "m16:64",
-                                "m16&16", "m16&32", "m16&64", "m32&32", "m94/108byte", "ptr16:16", "ptr16:32", "reg",
-                                "rel", "r16/m16", "r32/m16", "r32/m32", "r64/m16", "r64/m64", "Sreg", "ST(i)", "ST(0)",
+        unsupported_op_types = ["bnd", "bnd1", "bnd1/m64", "bnd1/m128", "CR0-CR7", "CR8", "DR0-DR7", "k1", "mem", "mm",
+                                "mm1", "moffs8","moffs16", "moffs32", "moffs64", "m8", "m16", "m16int", "m2byte", "m32",
+                                "m32fp", "m32int", "m512", "m512byte", "m64", "m64f", "m64fp", "m64int", "m80bcd",
+                                "m80dec", "m80fp", "m128", "m14/28byte", "m16:16", "m16:32", "m16:64", "m16&16",
+                                "m16&32", "m16&64", "m32&32", "m94/108byte", "ptr16:16", "ptr16:32", "reg", "rel",
+                                "r16/m16", "r32/m16", "r32/m32", "r64/m16", "r64/m64", "Sreg", "ST(i)", "ST(0)",
                                 "vm32y", "vm32z", "vm64z", "xmm", "xmm1", "xmm1/m32", "xmm1/m64", "xmm2", "xmm3/m128",
                                 "ymm1"]
 
@@ -130,21 +133,24 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<Token>) -> Result<Ins
                 continue
 
             if op == instruction.op2:
-                print("""    if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidOperand)); }""", file=types_header)
+                print("    if get_next(&mut iter)? != \",\" { return Err((iter.count(), ParseError::InvalidOperand)); }", file=types_header)
 
             if op.is_imm():
-                print(f"""    let imm{len(imm) + 1} = is_imm_of_size(&mut iter, {op.get_imm_size()})?;""", file=types_header)
+                print(f"    let imm{len(imm) + 1} = is_imm_of_size(&mut iter, {op.get_imm_size()})?;", file=types_header)
                 imm.append((op, f"imm{len(imm) + 1}"))
             elif op.is_rel():
-                print(f"""    let rel = is_rel_of_size(&mut iter, {op.get_rel_size()})?;""", file=types_header)
+                print(f"    let rel = is_rel_of_size(&mut iter, {op.get_rel_size()})?;", file=types_header)
                 rel = op
             elif op.is_specific_operand():
-                print(f"""    if get_next(&mut iter)? != "{op.raw}" {{ return Err((iter.count(), ParseError::InvalidOperand)); }}""", file=types_header)
+                print(f"    if get_next(&mut iter)? != \"{op.raw}\" {{ return Err((iter.count(), ParseError::InvalidOperand)); }}", file=types_header)
             elif op.is_unspecific_reg():
-                print(f"""    let reg = is_reg_of_size(&mut iter, {op.get_reg_size()})?;""", file=types_header)
+                print(f"    let reg = is_reg_of_size(&mut iter, {op.get_reg_size()})?;", file=types_header)
                 reg = True
             elif op.is_unspecific_rm():
-                print(f"""    let rm = is_rm_of_size(&mut iter, {op.get_rm_size()})?;""", file=types_header)
+                print(f"    let rm = is_rm_of_size(&mut iter, {op.get_rm_size()})?;", file=types_header)
+                rm = True
+            elif op.is_m():
+                print(f"    let rm = is_m_of_size(&mut iter, 0)?;", file=types_header)
                 rm = True
             else:
                 raise RuntimeError("Unsupported op type '" + op.raw + "'")

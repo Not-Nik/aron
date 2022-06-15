@@ -173,19 +173,14 @@ impl Lexer {
         if self.get_char_or('\0') == '\0' {
             return Err(ParseError::UnexpectedLB);
         } else if self.get_char() == '"' || self.get_char() == '\'' {
-            token.push('"');
             loop {
                 self.read_char();
                 if self.get_char_or('\0') == '\0' || self.get_char_or('\0') == '\n' {
                     break;
                 }
                 token.push(self.get_char_or('\0'));
-                if token.chars().last().unwrap() == '\'' {
+                if token.chars().last().unwrap() == '\'' || token.chars().last().unwrap() == '"' {
                     token.pop();
-                    token.push('"');
-                }
-                if token.chars().last().unwrap() == '"' {
-                    self.read_char();
                     break;
                 }
             }

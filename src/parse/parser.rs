@@ -17,14 +17,10 @@ fn parse_directive(tokens: &Vec<Token>) -> Result<Line, (usize, ParseError)> {
         }
 
         match first.unwrap().as_str() {
-            ".globl" => {
-                let name = iter.next();
+            ".asciz" => {
+                let string = get_next(&mut iter)?.clone_string();
 
-                if let Some(name) = name {
-                    Ok(Line::Directive(Directive::Global(name.clone_string())))
-                } else {
-                    Err((iter.count(), ParseError::UnexpectedLB))
-                }
+                Ok(Line::Directive(Directive::Asciz(string)))
             }
             ".build_version" => {
                 let os = iter.next();
@@ -32,17 +28,13 @@ fn parse_directive(tokens: &Vec<Token>) -> Result<Line, (usize, ParseError)> {
                 if let Some(os) = os {
                     match os.as_str() {
                         "macos" => {
-                            if get_next(&mut iter)? != "," {
-                                return Err((iter.count(), ParseError::InvalidDirective));
-                            }
+                            if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidDirective)); }
 
                             let major = get_next(&mut iter)?
                                 .parse::<u16>()
                                 .map_err(|_| (iter.clone().count(), ParseError::InvalidDirective))?;
 
-                            if get_next(&mut iter)? != "," {
-                                return Err((iter.count(), ParseError::InvalidDirective));
-                            }
+                            if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidDirective)); }
 
                             let minor = get_next(&mut iter)?
                                 .parse::<u16>()
@@ -57,6 +49,21 @@ fn parse_directive(tokens: &Vec<Token>) -> Result<Line, (usize, ParseError)> {
                     }
                 } else {
                     Err((iter.count(), ParseError::UnexpectedLB))
+                }
+            }
+            ".globl" => Ok(Line::Directive(Directive::Global(get_next(&mut iter)?.clone_string()))),
+            ".section" => {
+                let segment = get_next(&mut iter)?.clone_string();
+
+                let next = iter.next();
+                if let Some(next) = next {
+                    if next != "," { return Err((iter.count(), ParseError::InvalidDirective)); }
+
+                    let section = get_next(&mut iter)?.clone_string();
+
+                    Ok(Line::Directive(Directive::Section(format!("{},{}", segment, section))))
+                } else {
+                    Ok(Line::Directive(Directive::Section(segment)))
                 }
             }
             // Todo: parse other important directives like section and alignment indicators

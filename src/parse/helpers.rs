@@ -7,12 +7,36 @@ use std::mem::size_of;
 use std::slice::Iter;
 use std::str::FromStr;
 
-pub enum Immediate {
-    Integer(i32),
-    Reference(String, bool),
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum Relativity {
+    Absolute,
+    Relative,
+    RipRelative,
 }
 
-use Immediate::*;
+pub enum ImmediateType {
+    Integer(i32),
+    Reference(String),
+}
+
+pub struct Immediate {
+    pub rel: Relativity,
+    pub typ: ImmediateType,
+}
+
+use ImmediateType::*;
+use Relativity::*;
+use crate::instructions::Register::Rip;
+
+impl Immediate {
+    pub fn integer(int: i32, rel: Relativity) -> Immediate {
+        Immediate { rel, typ: Integer(int) }
+    }
+
+    pub fn reference(to: String, rel: Relativity) -> Immediate {
+        Immediate { rel, typ: Reference(to) }
+    }
+}
 
 pub fn get_next<'a>(iter: &'a mut Iter<Token>) -> Result<&'a Token, (usize, ParseError)> {
     let next = iter.next();
@@ -24,15 +48,19 @@ pub fn get_next<'a>(iter: &'a mut Iter<Token>) -> Result<&'a Token, (usize, Pars
 
 pub fn get_mod_from_rm(rm: &(Register, Mod, Option<Immediate>)) -> Mod {
     if let Some(off) = &rm.2 {
-        match off {
-            Integer(i) => {
-                if *i < 128 && *i > -128 {
-                    Mod::Offset8Bit
-                } else {
-                    Mod::Offset32Bit
+        if off.rel == RipRelative {
+            Mod::NoOffset
+        } else {
+            match off.typ {
+                Integer(i) => {
+                    if i < 128 && i > -128 {
+                        Mod::Offset8Bit
+                    } else {
+                        Mod::Offset32Bit
+                    }
                 }
+                Reference(_) => Mod::Offset32Bit,
             }
-            Reference(_, _) => Mod::Offset32Bit,
         }
     } else {
         rm.1
@@ -40,6 +68,8 @@ pub fn get_mod_from_rm(rm: &(Register, Mod, Option<Immediate>)) -> Mod {
 }
 
 pub fn is_imm_of_size(iter: &mut Iter<Token>, size: usize) -> Result<Immediate, (usize, ParseError)> {
+    if is_reg_of_size(&mut iter.clone(), 0).is_ok() { return Err((iter.count() - 1, ParseError::InvalidOperand)); }
+
     let next = get_next(iter)?;
     let (neg, num) = if next == "-" {
         let next = get_next(iter)?;
@@ -49,7 +79,7 @@ pub fn is_imm_of_size(iter: &mut Iter<Token>, size: usize) -> Result<Immediate, 
         let r = next.parse::<isize>();
 
         if r.is_err() {
-            return Ok(Reference(next.clone_string(), false));
+            return Ok(Immediate::reference(next.clone_string(), Absolute));
         }
 
         (1, r)
@@ -57,7 +87,7 @@ pub fn is_imm_of_size(iter: &mut Iter<Token>, size: usize) -> Result<Immediate, 
     let num = num.unwrap();
 
     if (size_of::<usize>() * 8 - num.leading_zeros() as usize) <= size {
-        Ok(Integer(num as i32 * neg))
+        Ok(Immediate::integer(num as i32 * neg, Absolute))
     } else {
         Err((iter.count(), ParseError::InvalidOperand))
     }
@@ -71,7 +101,7 @@ pub fn is_rel_of_size(iter: &mut Iter<Token>, size: usize) -> Result<Immediate, 
 
     let next = get_next(iter)?;
 
-    return Ok(Reference(next.clone_string(), true));
+    return Ok(Immediate::reference(next.clone_string(), Relative));
 }
 
 const REGS_8_BIT: [&str; 20] = [
@@ -79,16 +109,18 @@ const REGS_8_BIT: [&str; 20] = [
     "r13b", "r14b", "r15b",
 ];
 
-const REGS_16_BIT: [&str; 16] =
-    ["ax", "bx", "cx", "dx", "si", "di", "sp", "bp", "r8w", "r9w", "r10w", "r11w", "r12w", "r13w", "r14w", "r15w"];
-
-const REGS_32_BIT: [&str; 16] = [
-    "eax", "ebx", "ecx", "edx", "esi", "edi", "esp", "ebp", "r8d", "r9d", "r10d", "r11d", "r12d", "r13d", "r14d",
-    "r15d",
+const REGS_16_BIT: [&str; 17] = [
+    "ax", "bx", "cx", "dx", "si", "di", "sp", "bp", "r8w", "r9w", "r10w", "r11w", "r12w", "r13w", "r14w", "r15w", "ip",
 ];
 
-const REGS_64_BIT: [&str; 16] =
-    ["rax", "rbx", "rcx", "rdx", "rsi", "rdi", "rsp", "rbp", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15"];
+const REGS_32_BIT: [&str; 17] = [
+    "eax", "ebx", "ecx", "edx", "esi", "edi", "esp", "ebp", "r8d", "r9d", "r10d", "r11d", "r12d", "r13d", "r14d",
+    "r15d", "eip",
+];
+
+const REGS_64_BIT: [&str; 17] = [
+    "rax", "rbx", "rcx", "rdx", "rsi", "rdi", "rsp", "rbp", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15", "rip",
+];
 
 pub fn is_reg_of_size(iter: &mut Iter<Token>, size: usize) -> Result<Register, (usize, ParseError)> {
     let reg = get_next(iter)?;
@@ -119,26 +151,41 @@ pub fn is_rm_of_size(
     let reg_res = is_reg_of_size(&mut iter.clone(), size);
     if let Ok(reg_res) = reg_res {
         iter.next();
-        return Ok((reg_res, Mod::NoDereference, None));
+        Ok((reg_res, Mod::NoDereference, None))
+    } else {
+        is_m_of_size(iter, size)
     }
+}
 
+pub fn is_m_of_size(iter: &mut Iter<Token>,
+                    size: usize,
+) -> Result<(Register, Mod, Option<Immediate>), (usize, ParseError)> {
     let next = get_next(iter)?;
-    if match size {
-        8 => next != "byte",
-        16 => next != "word",
-        32 => next != "dword",
-        64 => next != "qword",
-        _ => panic!("Invalid size"),
-    } {
-        return Err((iter.count(), ParseError::InvalidOperand));
-    }
-    if iter.next().unwrap() != "ptr" {
-        return Err((iter.count(), ParseError::InvalidOperand));
-    }
-    if iter.next().unwrap() != "[" {
-        return Err((iter.count(), ParseError::InvalidOperand));
-    }
+    if next != "[" {
+        if match size {
+            8 => next != "byte",
+            16 => next != "word",
+            32 => next != "dword",
+            64 => next != "qword",
+            0 => ["bytes", "word", "dword", "qword"].contains(&next.as_str()),
+            _ => panic!("Invalid size"),
+        } {
+            return Err((iter.count(), ParseError::InvalidOperand));
+        }
+        if get_next(iter)? != "ptr" {
+            return Err((iter.count(), ParseError::InvalidOperand));
+        }
+        if get_next(iter)? != "[" {
+            return Err((iter.count(), ParseError::InvalidOperand));
+        }
+    };
     let reg_res = is_reg_of_size(iter, 0)?;
+
+    let rel = if reg_res == Rip {
+        RipRelative
+    } else {
+        Relative
+    };
 
     let next = get_next(iter)?;
 
@@ -148,9 +195,9 @@ pub fn is_rm_of_size(
     if ["+", "-"].contains(&next.as_str()) {
         let neg = if next.as_str() == "-" { -1 } else { 1 };
         let off_res = is_imm_of_size(iter, 32)?;
-        off = match off_res {
-            Integer(i) => Some(Integer(i * neg)),
-            Reference(s, r) => Some(Reference(s, r)),
+        off = match off_res.typ {
+            Integer(i) => Some(Immediate::integer(i * neg, rel)),
+            Reference(s) => Some(Immediate::reference(s, rel)),
         };
 
         if get_next(iter)? != "]" {

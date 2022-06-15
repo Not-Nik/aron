@@ -57,8 +57,10 @@ pub enum Line {
 
 #[derive(Debug)]
 pub enum Directive {
-    Global(String),
+    Asciz(String),
     BuildVersion(BuildVersion),
+    Global(String),
+    Section(String),
     Unknown,
 }
 

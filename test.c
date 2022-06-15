@@ -1,8 +1,8 @@
 // aron (c) Nikolas Wipper 2022
 
-#include <stdlib.h>
+#include <stdio.h>
 
 int main() {
-    exit(1);
+    puts("Hello World");
     return 0;
 }

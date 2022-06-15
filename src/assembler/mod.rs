@@ -1,25 +1,23 @@
 // aron (c) Nikolas Wipper 2022
 
-use crate::instructions::{Instruction, Reference};
+mod label;
+mod section;
+
+use crate::assembler::section::Section;
+use crate::parse::helpers::Relativity;
 use crate::parse::{Directive, Line};
 use object::write::{Mangling, Relocation, StandardSection, Symbol, SymbolSection};
 use object::{
-    write, Architecture, BinaryFormat, Endianness, RelocationEncoding, RelocationKind, SymbolFlags, SymbolKind,
-    SymbolScope,
+    write, Architecture, BinaryFormat, Endianness, RelocationEncoding, RelocationKind, SectionKind, SymbolFlags,
+    SymbolKind, SymbolScope,
 };
+use std::collections::HashMap;
 use std::error::Error;
 use std::fs::File;
 use std::path::Path;
 
-pub struct Function {
-    name: String,
-    bytes: Vec<u8>,
-    global: bool,
-    references: Vec<Reference>,
-}
-
 pub struct Module {
-    functions: Vec<Function>,
+    sections: HashMap<String, Section>,
 }
 
 pub enum ObjectFileType {
@@ -27,81 +25,38 @@ pub enum ObjectFileType {
     MachO,
 }
 
-impl Function {
-    pub fn new() -> Self {
-        Function { name: String::new(), bytes: Vec::new(), global: true, references: Vec::new() }
-    }
-
-    pub fn set_name(&mut self, name: &String) -> Result<(), ()> {
-        if !self.name.is_empty() {
-            Err(())
-        } else {
-            self.name = name.to_string();
-            Ok(())
-        }
-    }
-
-    pub fn get_name(&self) -> &String {
-        &self.name
-    }
-
-    pub fn make_global(&mut self) {
-        self.global = true;
-    }
-
-    pub fn write_instruction(&mut self, instruction: &Instruction) {
-        // note: maybe don't write instructions if there is no name, bc if we use a later label to call,
-        //  these instructions will never be executed. That way we'll basically remove dead instructions
-        //  for free. Does this have any other side-effects if we do it before resolving local jumps?
-        //  Can we even do it before we do that, bc detecting where a function ends requires that.
-        let reloc_offset = self.bytes.len();
-
-        self.bytes.extend(instruction.get_bytes());
-        for r in instruction.get_refs() {
-            let new_r = Reference { to: r.to.clone(), at: r.at + reloc_offset, rel: r.rel };
-            self.references.push(new_r);
-        }
-    }
-}
-
 impl Module {
     pub fn from_lines(lines: Vec<Line>) -> Self {
-        let mut functions = Vec::new();
+        let mut sections = HashMap::new();
+        sections.insert("__TEXT,__text".to_string(), Section::new());
 
-        let mut last_label = String::new();
-        let mut current_function = Function::new();
-
-        // Todo: resolve local jumps so we can
-        // Todo: keep track of jumps to see if the current instruction is the last in a block
+        let mut current_section = sections.get_mut("__TEXT,__text").unwrap();
 
         for line in lines {
             match line {
                 Line::Directive(dir) => match dir {
+                    Directive::Asciz(string) => {
+                        current_section.write_string(string);
+                    }
                     Directive::Global(name) => {
-                        if &name == current_function.get_name() {
-                            current_function.make_global();
+                        current_section.label_map.make_global(name);
+                    }
+                    Directive::Section(name) => {
+                        if !sections.contains_key(name.as_str()) {
+                            sections.insert(name.clone(), Section::new());
                         }
+                        current_section = sections.get_mut(name.as_str()).unwrap()
                     }
                     _ => {}
                 },
-                Line::Label(label) => last_label = label,
+                Line::Label(label) => current_section.label_map.insert_label(label, current_section.at()),
                 Line::Instruction(instr) => {
-                    current_function.write_instruction(&instr);
-
-                    // Todo: don't end function if there is a jump over this instruction
-                    if instr.has_name("ret") || instr.has_name("retf") {
-                        functions.push(current_function);
-                        current_function = Function::new();
-                    }
+                    current_section.write_instruction(&instr);
                 }
             }
-
-            // ignore result
-            let _ = current_function.set_name(&last_label);
         }
-        functions.push(current_function);
 
-        Module { functions }
+        Module { sections }
     }
 
     pub fn write_to_file<P: AsRef<Path>>(self, name: P, object_type: ObjectFileType) -> Result<(), Box<dyn Error>> {
@@ -116,75 +71,97 @@ impl Module {
 
         object.mangling = Mangling::None;
 
-        let text_id = object.section_id(StandardSection::Text);
+        let mut relocations = Vec::new();
 
-        let mut text_offset = 0;
+        for (name, sec) in self.sections {
+            let mut code = false;
 
-        for func in self.functions.into_iter() {
-            let func_name = func.name;
-            let func_data = func.bytes;
+            let section = match &*name {
+                "text" | "__TEXT,__text" => {
+                    code = true;
+                    object.section_id(StandardSection::Text)
+                }
+                "data" | "__DATA,__data" => object.section_id(StandardSection::Data),
+                "rodata" | "__TEXT,__const" | "__DATA,__const" | "__TEXT,__literal4" => object.section_id(StandardSection::ReadOnlyData),
+                "rodata.str" | "__TEXT,__cstring" => object.section_id(StandardSection::ReadOnlyString),
+                "bss" | "__DATA,__bss" => object.section_id(StandardSection::UninitializedData),
+                // Todo: do the other standard sections
+                _ => {
+                    let mut s = name.split(',');
+                    let segment = s.next().unwrap().as_bytes().to_vec();
+                    let section = s.next().unwrap().as_bytes().to_vec();
 
-            let symbol = Symbol {
-                name: func_name.into_bytes(),
-                value: text_offset,
-                size: func_data.len() as u64,
-                kind: SymbolKind::Text,
-                scope: if func.global { SymbolScope::Dynamic } else { SymbolScope::Compilation },
-                weak: false,
-                section: SymbolSection::Absolute,
-                flags: SymbolFlags::None,
+                    object.add_section(segment, section, SectionKind::Unknown)
+                }
             };
 
-            let symbol_id = object.add_symbol(symbol);
+            object.append_section_data(section, &*sec.bytes, 4 /*todo: read align from directives*/);
 
-            let mut relocs = Vec::with_capacity(func.references.len());
-
-            for rel in func.references {
-                let to_op = object.symbol_id(rel.to.as_bytes());
-                let to = if let Some(to_op) = to_op {
-                    to_op
-                } else {
-                    let symbol = Symbol {
-                        name: rel.to.into_bytes(),
-                        value: 0,
-                        size: 0,
-                        kind: SymbolKind::Unknown,
-                        scope: SymbolScope::Unknown,
-                        weak: false,
-                        section: SymbolSection::Undefined,
-                        flags: SymbolFlags::MachO {
-                            n_desc: 0
-                        },
-                    };
-
-                    object.add_symbol(symbol)
+            for label in sec.label_map.iter() {
+                let symbol = Symbol {
+                    name: label.name.into_bytes(),
+                    value: label.at as u64,
+                    size: 0,
+                    kind: if code { SymbolKind::Text } else { SymbolKind::Data },
+                    scope: if label.global { SymbolScope::Dynamic } else { SymbolScope::Linkage },
+                    weak: false,
+                    section: SymbolSection::Absolute,
+                    flags: SymbolFlags::None,
                 };
 
-                let reloc = Relocation {
-                    offset: text_offset + rel.at as u64,
-                    size: 32, // Todo: This is hardcoded atm
-                    kind: if rel.rel { RelocationKind::Relative } else { RelocationKind::Absolute },
-                    encoding: if rel.rel { RelocationEncoding::X86Branch } else { RelocationEncoding::X86Signed },
-                    symbol: to,
-                    addend: match object_type {
-                        ObjectFileType::Elf => 0,
-                        ObjectFileType::MachO => -4
-                    },
+                let symbol_id = object.add_symbol(symbol);
+                object.set_symbol_data(symbol_id, section, label.at as u64, 0);
+            }
+
+            for rel in sec.references {
+                relocations.push((section, rel));
+            }
+        }
+
+        for rel in relocations {
+            let to_op = object.symbol_id(rel.1.to.as_bytes());
+            let to = if let Some(to_op) = to_op {
+                to_op
+            } else {
+                eprintln!("Implicitly importing '{}'", rel.1.to);
+                let symbol = Symbol {
+                    name: rel.1.to.into_bytes(),
+                    value: 0,
+                    size: 0,
+                    kind: SymbolKind::Unknown,
+                    scope: SymbolScope::Unknown,
+                    weak: false,
+                    section: SymbolSection::Undefined,
+                    flags: SymbolFlags::None,
                 };
 
-                relocs.push(reloc);
-            }
+                object.add_symbol(symbol)
+            };
 
-            text_offset = object.add_symbol_data(
-                symbol_id,
-                text_id,
-                func_data.as_slice(),
-                4, /*todo: read align from directives*/
-            );
+            let kind = match rel.1.rel {
+                Relativity::Absolute => RelocationKind::Absolute,
+                Relativity::Relative | Relativity::RipRelative => RelocationKind::Relative,
+            };
 
-            for reloc in relocs {
-                object.add_relocation(text_id, reloc)?;
-            }
+            let encoding = match rel.1.rel {
+                Relativity::Absolute => RelocationEncoding::X86Signed,
+                Relativity::Relative => RelocationEncoding::X86Branch,
+                Relativity::RipRelative => RelocationEncoding::X86RipRelative,
+            };
+
+            let relocation = Relocation {
+                offset: rel.1.at as u64,
+                size: 32, // Todo: This is hardcoded atm
+                kind,
+                encoding,
+                symbol: to,
+                addend: match object_type {
+                    ObjectFileType::Elf => 0,
+                    ObjectFileType::MachO => -4,
+                },
+            };
+
+            object.add_relocation(rel.0, relocation)?;
         }
 
         object.write_stream(file)?;
