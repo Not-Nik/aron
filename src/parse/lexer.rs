@@ -43,6 +43,13 @@ fn starts_operator(c: &str) -> bool {
 }
 
 impl Token {
+    pub fn new(s: &str) -> Self {
+        Token {
+            raw: s.to_string(),
+            pos: LexPosition { line: 0, char: 0, pos: 0 }
+        }
+    }
+
     pub fn as_str(&self) -> &str {
         self.raw.as_str()
     }

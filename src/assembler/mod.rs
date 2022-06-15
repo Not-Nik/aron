@@ -1,9 +1,12 @@
 // aron (c) Nikolas Wipper 2022
 
-use crate::instructions::Instruction;
+use crate::instructions::{Instruction, Reference};
 use crate::parse::{Directive, Line};
-use object::write::{Mangling, StandardSection, Symbol, SymbolSection};
-use object::{write, Architecture, BinaryFormat, Endianness, SymbolFlags, SymbolKind, SymbolScope};
+use object::write::{Mangling, Relocation, StandardSection, Symbol, SymbolSection};
+use object::{
+    write, Architecture, BinaryFormat, Endianness, RelocationEncoding, RelocationKind, SymbolFlags, SymbolKind,
+    SymbolScope,
+};
 use std::error::Error;
 use std::fs::File;
 use std::path::Path;
@@ -12,6 +15,7 @@ pub struct Function {
     name: String,
     bytes: Vec<u8>,
     global: bool,
+    references: Vec<Reference>,
 }
 
 pub struct Module {
@@ -25,7 +29,7 @@ pub enum ObjectFileType {
 
 impl Function {
     pub fn new() -> Self {
-        Function { name: String::new(), bytes: Vec::new(), global: true }
+        Function { name: String::new(), bytes: Vec::new(), global: true, references: Vec::new() }
     }
 
     pub fn set_name(&mut self, name: &String) -> Result<(), ()> {
@@ -50,7 +54,13 @@ impl Function {
         //  these instructions will never be executed. That way we'll basically remove dead instructions
         //  for free. Does this have any other side-effects if we do it before resolving local jumps?
         //  Can we even do it before we do that, bc detecting where a function ends requires that.
+        let reloc_offset = self.bytes.len();
+
         self.bytes.extend(instruction.get_bytes());
+        for r in instruction.get_refs() {
+            let new_r = Reference { to: r.to.clone(), at: r.at + reloc_offset, rel: r.rel };
+            self.references.push(new_r);
+        }
     }
 }
 
@@ -89,6 +99,7 @@ impl Module {
             // ignore result
             let _ = current_function.set_name(&last_label);
         }
+        functions.push(current_function);
 
         Module { functions }
     }
@@ -126,12 +137,54 @@ impl Module {
 
             let symbol_id = object.add_symbol(symbol);
 
+            let mut relocs = Vec::with_capacity(func.references.len());
+
+            for rel in func.references {
+                let to_op = object.symbol_id(rel.to.as_bytes());
+                let to = if let Some(to_op) = to_op {
+                    to_op
+                } else {
+                    let symbol = Symbol {
+                        name: rel.to.into_bytes(),
+                        value: 0,
+                        size: 0,
+                        kind: SymbolKind::Unknown,
+                        scope: SymbolScope::Unknown,
+                        weak: false,
+                        section: SymbolSection::Undefined,
+                        flags: SymbolFlags::MachO {
+                            n_desc: 0
+                        },
+                    };
+
+                    object.add_symbol(symbol)
+                };
+
+                let reloc = Relocation {
+                    offset: text_offset + rel.at as u64,
+                    size: 32, // Todo: This is hardcoded atm
+                    kind: if rel.rel { RelocationKind::Relative } else { RelocationKind::Absolute },
+                    encoding: if rel.rel { RelocationEncoding::X86Branch } else { RelocationEncoding::X86Signed },
+                    symbol: to,
+                    addend: match object_type {
+                        ObjectFileType::Elf => 0,
+                        ObjectFileType::MachO => -4
+                    },
+                };
+
+                relocs.push(reloc);
+            }
+
             text_offset = object.add_symbol_data(
                 symbol_id,
                 text_id,
                 func_data.as_slice(),
                 4, /*todo: read align from directives*/
             );
+
+            for reloc in relocs {
+                object.add_relocation(text_id, reloc)?;
+            }
         }
 
         object.write_stream(file)?;

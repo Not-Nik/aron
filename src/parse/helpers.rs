@@ -1,11 +1,18 @@
 // aron (c) Nikolas Wipper 2022
 
-use std::mem::size_of;
-use std::slice::Iter;
-use std::str::FromStr;
 use crate::instructions::{Mod, Register};
 use crate::parse::lexer::Token;
 use crate::parse::ParseError;
+use std::mem::size_of;
+use std::slice::Iter;
+use std::str::FromStr;
+
+pub enum Immediate {
+    Integer(i32),
+    Reference(String, bool),
+}
+
+use Immediate::*;
 
 pub fn get_next<'a>(iter: &'a mut Iter<Token>) -> Result<&'a Token, (usize, ParseError)> {
     let next = iter.next();
@@ -15,40 +22,56 @@ pub fn get_next<'a>(iter: &'a mut Iter<Token>) -> Result<&'a Token, (usize, Pars
     Ok(next.unwrap())
 }
 
-pub fn get_mod_from_rm(rm: &(Register, Mod, Option<i32>)) -> Mod {
-    if let Some(off) = rm.2 {
-        if off < 128 && off > -128 {
-            Mod::Offset8Bit
-        } else {
-            Mod::Offset32Bit
+pub fn get_mod_from_rm(rm: &(Register, Mod, Option<Immediate>)) -> Mod {
+    if let Some(off) = &rm.2 {
+        match off {
+            Integer(i) => {
+                if *i < 128 && *i > -128 {
+                    Mod::Offset8Bit
+                } else {
+                    Mod::Offset32Bit
+                }
+            }
+            Reference(_, _) => Mod::Offset32Bit,
         }
     } else {
         rm.1
     }
 }
 
-pub fn is_imm_of_size(iter: &mut Iter<Token>, size: usize) -> Result<i32, (usize, ParseError)> {
+pub fn is_imm_of_size(iter: &mut Iter<Token>, size: usize) -> Result<Immediate, (usize, ParseError)> {
     let next = get_next(iter)?;
-    let neg = if next == "-" { -1 } else { 1 };
-
-    let num = if next == "-" {
+    let (neg, num) = if next == "-" {
         let next = get_next(iter)?;
 
-        next.parse::<isize>()
+        (-1, next.parse::<isize>())
     } else {
-        next.parse::<isize>()
-    };
+        let r = next.parse::<isize>();
 
-    if num.is_err() {
-        return Err((iter.count(), ParseError::InvalidOperand));
-    }
+        if r.is_err() {
+            return Ok(Reference(next.clone_string(), false));
+        }
+
+        (1, r)
+    };
     let num = num.unwrap();
 
     if (size_of::<usize>() * 8 - num.leading_zeros() as usize) <= size {
-        Ok(num as i32 * neg)
+        Ok(Integer(num as i32 * neg))
     } else {
         Err((iter.count(), ParseError::InvalidOperand))
     }
+}
+
+pub fn is_rel_of_size(iter: &mut Iter<Token>, size: usize) -> Result<Immediate, (usize, ParseError)> {
+    // Todo: rel16/rel8
+    if ![32usize, 64usize].contains(&size) {
+        return Err((iter.count(), ParseError::InvalidOperand));
+    }
+
+    let next = get_next(iter)?;
+
+    return Ok(Reference(next.clone_string(), true));
 }
 
 const REGS_8_BIT: [&str; 20] = [
@@ -89,7 +112,10 @@ pub fn is_reg_of_size(iter: &mut Iter<Token>, size: usize) -> Result<Register, (
     }
 }
 
-pub fn is_rm_of_size(iter: &mut Iter<Token>, size: usize) -> Result<(Register, Mod, Option<i32>), (usize, ParseError)> {
+pub fn is_rm_of_size(
+    iter: &mut Iter<Token>,
+    size: usize,
+) -> Result<(Register, Mod, Option<Immediate>), (usize, ParseError)> {
     let reg_res = is_reg_of_size(&mut iter.clone(), size);
     if let Ok(reg_res) = reg_res {
         iter.next();
@@ -103,22 +129,33 @@ pub fn is_rm_of_size(iter: &mut Iter<Token>, size: usize) -> Result<(Register, M
         32 => next != "dword",
         64 => next != "qword",
         _ => panic!("Invalid size"),
-    } { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().unwrap() != "ptr" { return Err((iter.count(), ParseError::InvalidOperand)); }
-    if iter.next().unwrap() != "[" { return Err((iter.count(), ParseError::InvalidOperand)); }
+    } {
+        return Err((iter.count(), ParseError::InvalidOperand));
+    }
+    if iter.next().unwrap() != "ptr" {
+        return Err((iter.count(), ParseError::InvalidOperand));
+    }
+    if iter.next().unwrap() != "[" {
+        return Err((iter.count(), ParseError::InvalidOperand));
+    }
     let reg_res = is_reg_of_size(iter, 0)?;
 
     let next = get_next(iter)?;
 
     let mod_byte: Mod;
-    let mut off: Option<i32> = None;
+    let mut off: Option<Immediate> = None;
 
     if ["+", "-"].contains(&next.as_str()) {
         let neg = if next.as_str() == "-" { -1 } else { 1 };
         let off_res = is_imm_of_size(iter, 32)?;
-        off = Some(off_res * neg);
+        off = match off_res {
+            Integer(i) => Some(Integer(i * neg)),
+            Reference(s, r) => Some(Reference(s, r)),
+        };
 
-        if get_next(iter)? != "]" { return Err((iter.count(), ParseError::InvalidOperand)); }
+        if get_next(iter)? != "]" {
+            return Err((iter.count(), ParseError::InvalidOperand));
+        }
 
         mod_byte = Mod::Offset32Bit;
     } else if next != "]" {

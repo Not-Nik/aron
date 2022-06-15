@@ -5,7 +5,9 @@ extern crate enum_derive;
 
 use crate::assembler::{Module, ObjectFileType};
 use crate::parse::parser::parse_lines;
+use object::{Object, ObjectSymbol};
 use std::ffi::OsStr;
+use std::fs;
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
@@ -35,7 +37,7 @@ fn main() {
         if let Ok(parsed_lines) = parsed_lines {
             let module = Module::from_lines(parsed_lines);
 
-            let out_name = Path::new(path.file_stem().unwrap()).with_extension("o");
+            let out_name = path.with_extension("o");
 
             module.write_to_file(out_name, ObjectFileType::MachO).expect("Couldn't write module");
         } else {

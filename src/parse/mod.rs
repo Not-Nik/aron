@@ -1,10 +1,10 @@
 // aron-parse (c) Nikolas Wipper 2022
 
+mod encodings;
+pub mod helpers;
 mod lexer;
 pub mod parser;
 mod tests;
-mod encodings;
-mod helpers;
 
 use crate::instructions::Instruction;
 use crate::parse::lexer::Token;
@@ -59,11 +59,11 @@ pub enum Line {
 pub enum Directive {
     Global(String),
     BuildVersion(BuildVersion),
-    Unknown
+    Unknown,
 }
 
 #[derive(Debug)]
 pub enum BuildVersion {
-    MacOS{major: u16, minor: u16},
-    Unknown
+    MacOS { major: u16, minor: u16 },
+    Unknown,
 }

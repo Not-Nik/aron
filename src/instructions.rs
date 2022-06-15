@@ -1,10 +1,10 @@
 // aron (c) Nikolas Wipper 2022
 
+use crate::number::Number;
 use std::fmt::{Debug, Formatter};
 use std::io::Write;
 use std::str::FromStr;
 use Register::*;
-use crate::number::Number;
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub enum Register {
@@ -76,6 +76,7 @@ pub enum Mod {
     NoDereference = 0b11,
 }
 
+use crate::parse::helpers::Immediate;
 use Mod::*;
 
 #[derive(PartialEq, Eq, PartialOrd, Copy, Clone)]
@@ -97,7 +98,7 @@ impl TryFrom<usize> for Size {
             16 => Ok(Word),
             32 => Ok(DWord),
             64 => Ok(QWord),
-            _ => Err(())
+            _ => Err(()),
         }
     }
 }
@@ -123,9 +124,16 @@ pub struct Instruction {
 }
 */
 
+pub struct Reference {
+    pub to: String,
+    pub at: usize,
+    pub rel: bool
+}
+
 pub struct Instruction {
     bytes: Vec<u8>,
-    name: String
+    name: String,
+    refs: Vec<Reference>,
 }
 
 impl Debug for Instruction {
@@ -136,24 +144,44 @@ impl Debug for Instruction {
 
 impl Instruction {
     pub fn new(name: String) -> Self {
-        Instruction {
-            bytes: Vec::new(),
-            name
-        }
+        Instruction { bytes: Vec::new(), name, refs: Vec::new() }
     }
 
     pub fn get_bytes(&self) -> &Vec<u8> {
         &self.bytes
     }
 
-    pub fn has_name(&self, name: &str) -> bool { self.name == name }
+    pub fn get_refs(&self) -> &Vec<Reference> {
+        &self.refs
+    }
+
+    pub fn has_name(&self, name: &str) -> bool {
+        self.name == name
+    }
 
     pub fn write_byte(&mut self, byte: u8) {
         self.bytes.push(byte);
     }
-    
+
     pub fn write_num<I: Number<Output = O>, O: AsRef<[u8]>>(&mut self, value: I) {
         self.bytes.write(value.to_bytes(false).as_ref()).unwrap();
+    }
+
+    pub fn write_imm<I: Number<Output = O> + From<i8> + TryFrom<i32>, O: AsRef<[u8]>>(&mut self, imm: Immediate) {
+        match imm {
+            Immediate::Integer(i) => {
+                let r = i.try_into();
+                if r.is_err() {
+                    panic!("imm write err");
+                }
+                self.write_num::<I, O>(unsafe { r.unwrap_unchecked() });
+            }
+            Immediate::Reference(r, rel) => {
+                let at = self.bytes.len();
+                self.write_num::<I, O>(0.into());
+                self.refs.push(Reference { to: r, at, rel });
+            }
+        }
     }
 
     pub fn write_rex(&mut self, w: bool, rm: u8, reg: u8) {
@@ -168,14 +196,14 @@ impl Instruction {
         self.write_byte(mod_rm);
     }
 
-    pub fn write_offset(&mut self, m: Mod, rm: u8, reg: u8, off: Option<i32>) {
+    pub fn write_offset(&mut self, m: Mod, rm: u8, reg: u8, off: Option<Immediate>) {
         self.write_mod(m, rm, reg);
 
         if let Some(off) = off {
             if m == Offset32Bit {
-                self.write_num(off);
+                self.write_imm::<i32, [u8; 4]>(off);
             } else if m == Offset8Bit {
-                self.write_num(off as i8);
+                self.write_imm::<i8, [u8; 1]>(off);
             }
         }
     }

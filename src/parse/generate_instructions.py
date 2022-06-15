@@ -19,6 +19,13 @@ class Operand:
         if self.raw:
             return int(self.raw[3:])
 
+    def is_rel(self):
+        return self.raw and self.raw.startswith("rel")
+
+    def get_rel_size(self) -> int:
+        if self.raw:
+            return int(self.raw[3:])
+
     def is_specific_operand(self) -> bool:
         return self.raw and self.raw in ["al", "ah", "ax", "eax", "rax", "cl", "ds", "dx", "es", "ss", "gs", "fs", "cs", "0",
                                          "1", "3"]
@@ -70,9 +77,9 @@ def main():
                                 "m32", "m32fp", "m32int", "m512", "m512byte", "m64", "m64f", "m64fp", "m64int",
                                 "m80bcd", "m80dec", "m80fp", "m128", "m14/28byte", "m16:16", "m16:32", "m16:64",
                                 "m16&16", "m16&32", "m16&64", "m32&32", "m94/108byte", "ptr16:16", "ptr16:32", "reg",
-                                "rel", "rel8", "rel16", "rel32", "r16/m16", "r32/m16", "r32/m32", "r64/m16", "r64/m64",
-                                "Sreg", "ST(i)", "ST(0)", "vm32y", "vm32z", "vm64z", "xmm", "xmm1", "xmm1/m32",
-                                "xmm1/m64", "xmm2", "xmm3/m128", "ymm1"]
+                                "rel", "r16/m16", "r32/m16", "r32/m32", "r64/m16", "r64/m64", "Sreg", "ST(i)", "ST(0)",
+                                "vm32y", "vm32z", "vm64z", "xmm", "xmm1", "xmm1/m32", "xmm1/m64", "xmm2", "xmm3/m128",
+                                "ymm1"]
 
         opcode_name_overrides = {
             "CB": "RETF",
@@ -115,7 +122,8 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<Token>) -> Result<Ins
 
         rm = False
         reg = False
-        imm = None
+        imm = []
+        rel = None
 
         for op in [instruction.op1, instruction.op2]:
             if not op.raw:
@@ -127,8 +135,11 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<Token>) -> Result<Ins
             # todo: some instructions have two immediate values
             # todo: some instructions have two regs
             if op.is_imm():
-                print(f"""    let imm = is_imm_of_size(&mut iter, {op.get_imm_size()})?;""", file=types_header)
-                imm = op
+                print(f"""    let imm{len(imm) + 1} = is_imm_of_size(&mut iter, {op.get_imm_size()})?;""", file=types_header)
+                imm.append((op, f"imm{len(imm) + 1}"))
+            elif op.is_rel():
+                print(f"""    let rel = is_rel_of_size(&mut iter, {op.get_rel_size()})?;""", file=types_header)
+                rel = op
             elif op.is_specific_operand():
                 print(f"""    if get_next(&mut iter)? != "{op.raw}" {{ return Err((iter.count(), ParseError::InvalidOperand)); }}""", file=types_header)
             elif op.is_unspecific_reg():
@@ -146,6 +157,7 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<Token>) -> Result<Ins
         if rm:
             print("\n    let m = get_mod_from_rm(&rm);", file=types_header)
 
+        # Normalize opcode
         opcode = instruction.opcode \
             .replace("REX +", "REX") \
             .replace("REX.W +", "REX.W") \
@@ -161,7 +173,6 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<Token>) -> Result<Ins
             if p.startswith("/"):
                 fill_reg = parts.pop(index)[1:]
 
-        # if rm doesnt exist, reg doesnt either
         if not reg:
             if fill_reg and fill_reg != "r":
                 reg = fill_reg
@@ -175,14 +186,17 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<Token>) -> Result<Ins
         else:
             rm = "rm.0"
 
-        imm_write = None
+        imm_writes = []
 
         for part in parts:
             if part.startswith("REX"):
                 w = "true" if part.endswith(".W") else "false"
                 print(f"    instr.write_rex({w}, {rm} as u8, {reg} as u8);", file=types_header)
             elif part.startswith("i"):
-                imm_write = f"    instr.write_num(imm as i{imm.get_imm_size()});"
+                i = imm.pop(0)
+                imm_writes.append(f"    instr.write_imm::<i{i[0].get_imm_size()}, [u8; {int(i[0].get_imm_size() / 8)}]>({i[1]});")
+            elif part.startswith("c"):
+                imm_writes.append(f"    instr.write_imm::<i{rel.get_imm_size()}, [u8; {int(rel.get_imm_size() / 8)}]>(rel);")
             else:
                 part = part.replace("rb", "reg as u8").replace("rw", "reg as u8").replace("rd", "reg as u8")
                 print(f"    instr.write_byte(0x{part});", file=types_header)
@@ -190,8 +204,8 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<Token>) -> Result<Ins
         if rm == "rm.0":
             print(f"    instr.write_offset(m, rm.0 as u8, {reg} as u8, rm.2);", file=types_header)
 
-        if imm_write:
-            print(imm_write, file=types_header)
+        for write in imm_writes:
+            print(write, file=types_header)
 
         print("""
     Ok(instr)""", file=types_header)
