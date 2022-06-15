@@ -34,8 +34,7 @@ mod tests {
 
         assert!(instr.is_ok());
         let instr = instr.unwrap();
-        // Todo: this will work once instructions using less bytes are preferred
-        //assert_eq!(instr.get_bytes(), &vec![0x55u8]);
+        assert_eq!(instr.get_bytes(), &vec![0x55u8]);
 
         let instr = matches(&vec![Token::new("rdseed"), Token::new("eax")]);
 

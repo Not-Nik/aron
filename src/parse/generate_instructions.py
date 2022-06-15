@@ -239,12 +239,15 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<Token>) -> Result<Ins
 const MATCH_FUNCTIONS: [fn(&Vec<Token>) -> Result<Instruction, (usize, ParseError)>; {len(funcs)}] = [{func_list}];
 
 pub fn matches(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {{
+    let mut i: Option<Instruction> = None;
     let mut err: (usize, ParseError) = (tokens.len() - 1, ParseError::InvalidInstruction);
     
     for func in MATCH_FUNCTIONS {{
         let instr = func(tokens);
-        if instr.is_ok() {{
-            return Ok(instr.unwrap());
+        if let Ok(instr) = instr {{
+            if i.is_none() || instr.get_bytes().len() < unsafe {{ i.as_ref().unwrap_unchecked().get_bytes().len() }} {{
+                i = Some(instr);
+            }}
         }} else {{
             let instr_err = instr.unwrap_err();
             if instr_err.0 < err.0 {{
@@ -253,7 +256,11 @@ pub fn matches(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> 
         }}
     }}
     
-    Err(err)
+    if let Some(i) = i {{
+        Ok(i)
+    }} else {{
+        Err(err)
+    }}
 }}""", file=types_header)
 
 

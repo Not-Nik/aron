@@ -127,7 +127,6 @@ impl Module {
             let to = if let Some(to_op) = to_op {
                 to_op
             } else {
-                eprintln!("Implicitly importing '{}'", rel.1.to);
                 let symbol = Symbol {
                     name: rel.1.to.into_bytes(),
                     value: 0,
