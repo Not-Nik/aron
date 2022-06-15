@@ -1,3 +1,9 @@
+# aron (c) Nikolas Wipper 2022
+
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 # This script generates a very naive matching algorithm, where, instead of intelligently parsing a line, with several
 # branches, every possible instruction is brute-forced and the first one to not return an error is used.
 # Todo: return the instruction that uses the least bytes
@@ -107,6 +113,10 @@ def main():
             instructions.append(InstructionTemplate(opc, sp[0], None, None))
 
     print("""// aron (c) Nikolas Wipper 2022
+
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
 use crate::instructions::{Instruction, Mod};
 use crate::parse::lexer::Token;
