@@ -29,6 +29,16 @@ pub enum ObjectFileType {
     MachO,
 }
 
+impl Default for ObjectFileType {
+    fn default() -> Self {
+        if cfg!(target_os = "macos") {
+            ObjectFileType::MachO
+        } else {
+            ObjectFileType::Elf
+        }
+    }
+}
+
 impl Module {
     pub fn from_lines(lines: Vec<Line>) -> Self {
         let mut sections = HashMap::new();
