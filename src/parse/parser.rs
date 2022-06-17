@@ -10,6 +10,20 @@ use crate::parse::lexer::{Lexer, Token};
 use crate::parse::{BuildVersion, Directive, Line, ParseError};
 use ariadne::{Label, Report, ReportKind, Source};
 
+fn sanitize_string(mut string: String) -> String {
+    string = string.replace("\\a", "\x07");
+    string = string.replace("\\b", "\x08");
+    string = string.replace("\\t", "\x09");
+    string = string.replace("\\n", "\x0A");
+    string = string.replace("\\v", "\x0B");
+    string = string.replace("\\f", "\x0C");
+    string = string.replace("\\r", "\x0D");
+    string = string.replace("\\e", "\x1B");
+    string = string.replace("\\?", "\x3F");
+
+    string
+}
+
 fn parse_directive(tokens: &Vec<Token>) -> Result<Line, (usize, ParseError)> {
     if tokens.is_empty() {
         Err((0, ParseError::UnexpectedLB))
@@ -24,7 +38,7 @@ fn parse_directive(tokens: &Vec<Token>) -> Result<Line, (usize, ParseError)> {
             ".asciz" => {
                 let string = get_next(&mut iter)?.clone_string();
 
-                Ok(Line::Directive(Directive::Asciz(string)))
+                Ok(Line::Directive(Directive::Asciz(sanitize_string(string))))
             }
             ".build_version" => {
                 let os = iter.next();
@@ -32,13 +46,17 @@ fn parse_directive(tokens: &Vec<Token>) -> Result<Line, (usize, ParseError)> {
                 if let Some(os) = os {
                     match os.as_str() {
                         "macos" => {
-                            if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidDirective)); }
+                            if get_next(&mut iter)? != "," {
+                                return Err((iter.count(), ParseError::InvalidDirective));
+                            }
 
                             let major = get_next(&mut iter)?
                                 .parse::<u16>()
                                 .map_err(|_| (iter.clone().count(), ParseError::InvalidDirective))?;
 
-                            if get_next(&mut iter)? != "," { return Err((iter.count(), ParseError::InvalidDirective)); }
+                            if get_next(&mut iter)? != "," {
+                                return Err((iter.count(), ParseError::InvalidDirective));
+                            }
 
                             let minor = get_next(&mut iter)?
                                 .parse::<u16>()
@@ -61,7 +79,9 @@ fn parse_directive(tokens: &Vec<Token>) -> Result<Line, (usize, ParseError)> {
 
                 let next = iter.next();
                 if let Some(next) = next {
-                    if next != "," { return Err((iter.count(), ParseError::InvalidDirective)); }
+                    if next != "," {
+                        return Err((iter.count(), ParseError::InvalidDirective));
+                    }
 
                     let section = get_next(&mut iter)?.clone_string();
 

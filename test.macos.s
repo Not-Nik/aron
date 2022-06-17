@@ -15,7 +15,9 @@ _main:                                  ## @main
 	sub	rsp, 16
 	mov	dword ptr [rbp - 4], 0
 	lea	rdi, [rip + L_.str]
-	call	_puts
+	mov	esi, 4
+	mov	al, 0
+	call	_printf
 	xor	eax, eax
 	add	rsp, 16
 	pop	rbp
@@ -24,6 +26,6 @@ _main:                                  ## @main
                                         ## -- End function
 	.section	__TEXT,__cstring,cstring_literals
 L_.str:                                 ## @.str
-	.asciz	"Hello World"
+	.asciz	"Hello World %i\n"
 
 .subsections_via_symbols

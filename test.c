@@ -7,6 +7,6 @@
 #include <stdio.h>
 
 int main() {
-    puts("Hello World");
+    printf("Hello World %i\n", 4);
     return 0;
 }
