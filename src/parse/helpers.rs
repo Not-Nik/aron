@@ -90,7 +90,7 @@ pub fn is_imm_of_size(iter: &mut Iter<Token>, size: usize) -> Result<Immediate, 
     };
     let num = num.unwrap();
 
-    if (size_of::<usize>() * 8 - num.leading_zeros() as usize) <= size {
+    if (size_of::<isize>() * 8 - num.leading_zeros() as usize) <= size - 1 {
         Ok(Immediate::integer(num as i32 * neg, Absolute))
     } else {
         Err((iter.count(), ParseError::InvalidOperand))

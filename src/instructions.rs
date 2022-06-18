@@ -84,8 +84,8 @@ pub enum Mod {
     NoDereference = 0b11,
 }
 
-use Mod::*;
 use crate::parse::helpers::Relativity::RipRelative;
+use Mod::*;
 
 #[derive(PartialEq, Eq, PartialOrd, Copy, Clone)]
 pub enum Size {
@@ -179,11 +179,8 @@ impl Instruction {
         let at = self.bytes.len();
         match imm.typ {
             ImmediateType::Integer(i) => {
-                let r = i.try_into();
-                if r.is_err() {
-                    panic!("imm write err");
-                }
-                self.write_num::<I, O>(unsafe { r.unwrap_unchecked() });
+                // The unsafe block helps avoid needing Debug for I's TryInto error
+                self.write_num::<I, O>(unsafe { i.try_into().unwrap_unchecked() });
             }
             ImmediateType::Reference(r) => {
                 self.write_num::<I, O>(0.into());
