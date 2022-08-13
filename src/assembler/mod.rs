@@ -39,6 +39,17 @@ impl Default for ObjectFileType {
     }
 }
 
+impl Into<&'static str> for ObjectFileType {
+    fn into(self) -> &'static str {
+        use ObjectFileType::*;
+
+        match self {
+            Elf => "elf",
+            MachO => "macho",
+        }
+    }
+}
+
 impl Module {
     pub fn from_lines(lines: Vec<Line>) -> Self {
         let mut sections = HashMap::new();
@@ -96,7 +107,9 @@ impl Module {
                     object.section_id(StandardSection::Text)
                 }
                 "data" | "__DATA,__data" => object.section_id(StandardSection::Data),
-                "rodata" | "__TEXT,__const" | "__DATA,__const" | "__TEXT,__literal4" => object.section_id(StandardSection::ReadOnlyData),
+                "rodata" | "__TEXT,__const" | "__DATA,__const" | "__TEXT,__literal4" => {
+                    object.section_id(StandardSection::ReadOnlyData)
+                }
                 "rodata.str" | "__TEXT,__cstring" => object.section_id(StandardSection::ReadOnlyString),
                 "bss" | "__DATA,__bss" => object.section_id(StandardSection::UninitializedData),
                 // Todo: do the other standard sections

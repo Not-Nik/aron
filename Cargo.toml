@@ -1,6 +1,6 @@
 [package]
 name = "aron"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Not-Nik"]
 
@@ -10,5 +10,5 @@ authors = ["Not-Nik"]
 ariadne = "0.1"
 enum_derive = "0.1"
 custom_derive = "0.1"
-object = { version = "0.28", features = ["write"] }
+object = { version = "0.29", features = ["write"] }
 clap = { version = "3.2.17", features = ["cargo"] }
