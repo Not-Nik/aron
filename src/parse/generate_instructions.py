@@ -33,11 +33,12 @@ class Operand:
             return int(self.raw[3:])
 
     def is_specific_operand(self) -> bool:
-        return self.raw and self.raw in ["al", "ah", "ax", "eax", "rax", "cl", "ds", "dx", "es", "ss", "gs", "fs", "cs", "0",
-                                         "1", "3"]
+        return self.raw and self.raw in ["al", "ah", "ax", "eax", "rax", "cl", "ds", "dx", "es", "ss", "gs", "fs", "cs",
+                                         "0", "1", "3"]
 
     def is_unspecific_reg(self) -> bool:
-        return self.raw and self.raw.startswith("r") and not self.raw.startswith("r/m") and not self.raw.startswith("rel")
+        return self.raw and self.raw.startswith("r") and not self.raw.startswith("r/m") and not self.raw.startswith(
+            "rel")
 
     def get_reg_size(self) -> int:
         if self.raw:
@@ -82,11 +83,11 @@ def main():
             continue
 
         unsupported_op_types = ["bnd", "bnd1", "bnd1/m64", "bnd1/m128", "CR0-CR7", "CR8", "DR0-DR7", "k1", "mem", "mm",
-                                "mm1", "moffs8","moffs16", "moffs32", "moffs64", "m8", "m16", "m16int", "m2byte", "m32",
-                                "m32fp", "m32int", "m512", "m512byte", "m64", "m64f", "m64fp", "m64int", "m80bcd",
-                                "m80dec", "m80fp", "m128", "m14/28byte", "m16:16", "m16:32", "m16:64", "m16&16",
-                                "m16&32", "m16&64", "m32&32", "m94/108byte", "ptr16:16", "ptr16:32", "reg", "rel",
-                                "r16/m16", "r32/m16", "r32/m32", "r64/m16", "r64/m64", "Sreg", "ST(i)", "ST(0)",
+                                "mm1", "moffs8", "moffs16", "moffs32", "moffs64", "m8", "m16", "m16int", "m2byte",
+                                "m32", "m32fp", "m32int", "m512", "m512byte", "m64", "m64f", "m64fp", "m64int",
+                                "m80bcd", "m80dec", "m80fp", "m128", "m14/28byte", "m16:16", "m16:32", "m16:64",
+                                "m16&16", "m16&32", "m16&64", "m32&32", "m94/108byte", "ptr16:16", "ptr16:32", "reg",
+                                "rel", "r16/m16", "r32/m16", "r32/m32", "r64/m16", "r64/m64", "Sreg", "ST(i)", "ST(0)",
                                 "vm32y", "vm32z", "vm64z", "xmm", "xmm1", "xmm1/m32", "xmm1/m64", "xmm2", "xmm3/m128",
                                 "ymm1"]
 
@@ -118,7 +119,7 @@ def main():
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-use crate::instructions::{Instruction, Mod};
+use crate::instructions::{Instruction, Opcode, Mod, Register};
 use crate::parse::lexer::Token;
 use crate::parse::ParseError;
 use crate::parse::helpers::*;""", file=types_header)
@@ -129,7 +130,8 @@ use crate::parse::helpers::*;""", file=types_header)
 fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {{
     let mut iter = tokens.iter();
     
-    if get_next(&mut iter)? != \"{instruction.name}\" {{ return Err((iter.count(), ParseError::InvalidInstruction)); }}""", file=types_header)
+    if get_next(&mut iter)? != \"{instruction.name}\" {{ return Err((iter.count(), ParseError::InvalidInstruction)); }}""",
+              file=types_header)
 
         funcs.append(f"matches_{instruction.name}{len(funcs) + 1}")
 
@@ -143,16 +145,21 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<Token>) -> Result<Ins
                 continue
 
             if op == instruction.op2:
-                print("    if get_next(&mut iter)? != \",\" { return Err((iter.count(), ParseError::InvalidOperand)); }", file=types_header)
+                print(
+                    "    if get_next(&mut iter)? != \",\" { return Err((iter.count(), ParseError::InvalidOperand)); }",
+                    file=types_header)
 
             if op.is_imm():
-                print(f"    let imm{len(imm) + 1} = is_imm_of_size(&mut iter, {op.get_imm_size()})?;", file=types_header)
+                print(f"    let imm{len(imm) + 1} = is_imm_of_size(&mut iter, {op.get_imm_size()})?;",
+                      file=types_header)
                 imm.append((op, f"imm{len(imm) + 1}"))
             elif op.is_rel():
                 print(f"    let rel = is_rel_of_size(&mut iter, {op.get_rel_size()})?;", file=types_header)
                 rel = op
             elif op.is_specific_operand():
-                print(f"    if get_next(&mut iter)? != \"{op.raw}\" {{ return Err((iter.count(), ParseError::InvalidOperand)); }}", file=types_header)
+                print(
+                    f"    if get_next(&mut iter)? != \"{op.raw}\" {{ return Err((iter.count(), ParseError::InvalidOperand)); }}",
+                    file=types_header)
             elif op.is_unspecific_reg():
                 print(f"    let reg = is_reg_of_size(&mut iter, {op.get_reg_size()})?;", file=types_header)
                 reg = True
@@ -165,11 +172,9 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<Token>) -> Result<Ins
             else:
                 raise RuntimeError("Unsupported op type '" + op.raw + "'")
 
-        print(f"""    if iter.next().is_some() {{ return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }}
-    let mut instr = Instruction::new("{instruction.name}".to_string());""", file=types_header)
-
-        if rm:
-            print("\n    let m = get_mod_from_rm(&rm);", file=types_header)
+        print(
+            f"""    if iter.next().is_some() {{ return Err((iter.count(), ParseError::ExtraneousTokenAfterInstruction)); }}""",
+            file=types_header)
 
         # Normalize opcode
         opcode = instruction.opcode \
@@ -200,36 +205,61 @@ fn matches_{instruction.name}{len(funcs) + 1}(tokens: &Vec<Token>) -> Result<Ins
         else:
             rm = "rm.0"
 
-        imm_writes = []
         wrote_rel = False
+
+        opcode_array = []
+        imm_count = 1
+
+        imms = []
 
         for part in parts:
             if part.startswith("REX"):
                 w = "true" if part.endswith(".W") else "false"
-                print(f"    instr.write_rex({w}, {rm} as u8, {reg} as u8);", file=types_header)
+                opcode_array.append(f"Opcode::Rex{{wide: {w}}}")
             elif part.startswith("i"):
                 i = imm.pop(0)
-                imm_writes.append(f"    instr.write_imm::<i{i[0].get_imm_size()}, [u8; {int(i[0].get_imm_size() / 8)}]>({i[1]});")
+                imms.append(f"Some({i[1]})")
+                imm_count += 1
             elif part.startswith("c"):
-                imm_writes.append(f"    instr.write_imm::<i{rel.get_imm_size()}, [u8; {int(rel.get_imm_size() / 8)}]>(rel);")
+                imms.append(f"Some(rel)")
                 wrote_rel = True
+
+                imm_count += 1
             else:
                 part = part.replace("rb", "reg as u8").replace("rw", "reg as u8").replace("rd", "reg as u8")
-                print(f"    instr.write_byte(0x{part});", file=types_header)
 
-        if rm == "rm.0":
-            print(f"    instr.write_offset(m, rm.0 as u8, {reg} as u8, rm.2);", file=types_header)
-        elif reg == "reg" and fill_reg:
-            print(f"    instr.write_offset(Mod::NoDereference, reg as u8, {fill_reg}, None);", file=types_header)
+                opcode_array.append(f"Opcode::Byte(0x{part})")
 
-        for write in imm_writes:
-            print(write, file=types_header)
+        instr_mod = "get_mod_from_rm(&rm)" if rm == "rm.0" else "Mod::NoDereference"
+        instr_opcode = "vec![" + (", ".join(opcode_array)) + "]"
+        instr_offset = "rm.2" if rm == "rm.0" else "None"
+        instr_reg = "None"
+        instr_rm = "None"
 
         if not wrote_rel and rel:
-            print(f"    instr.write_imm::<i{rel.get_imm_size()}, [u8; {int(rel.get_imm_size() / 8)}]>(rel);", file=types_header)
+            imms.append(f"Some(rel)")
 
-        print("""
-    Ok(instr)""", file=types_header)
+        if len(imms) > 2:
+            raise "Too many immediates"
+
+        while len(imms) < 2:
+            imms.append("None")
+
+        instr_imms = ", ".join(imms)
+
+        if rm == "rm.0":
+            # Todo: as i32 is a dirty hack
+            instr_reg = f"Some(Register::try_from({reg} as i32).unwrap())"
+            instr_rm = "Some(rm.0)"
+            instr_offset = "rm.2"
+        elif reg == "reg" and fill_reg:
+            instr_reg = f"Some(Register::try_from({fill_reg}).unwrap())"
+            instr_rm = "Some(reg)"
+            instr_mod = "Mod::NoDereference"
+
+        print(f"""
+    Ok(Instruction::new("{instruction.name}".to_string(), {instr_mod}, {instr_opcode}, {instr_offset}, {instr_reg}, {instr_rm}, {instr_imms}))""",
+              file=types_header)
 
         print("}", file=types_header)
 
@@ -240,13 +270,16 @@ const MATCH_FUNCTIONS: [fn(&Vec<Token>) -> Result<Instruction, (usize, ParseErro
 
 pub fn matches(tokens: &Vec<Token>) -> Result<Instruction, (usize, ParseError)> {{
     let mut i: Option<Instruction> = None;
+    let mut l: usize = usize::MAX;
     let mut err: (usize, ParseError) = (tokens.len() - 1, ParseError::InvalidInstruction);
     
     for func in MATCH_FUNCTIONS {{
         let instr = func(tokens);
         if let Ok(instr) = instr {{
-            if i.is_none() || instr.get_bytes().len() < unsafe {{ i.as_ref().unwrap_unchecked().get_bytes().len() }} {{
+            let le = instr.encode().get_bytes().len();
+            if i.is_none() || le < l {{
                 i = Some(instr);
+                l = le;
             }}
         }} else {{
             let instr_err = instr.unwrap_err();

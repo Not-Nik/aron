@@ -26,8 +26,9 @@ impl Section {
     pub fn write_instruction(&mut self, instruction: &Instruction) {
         let reloc_offset = self.bytes.len();
 
-        self.bytes.extend(instruction.get_bytes());
-        for r in instruction.get_refs() {
+        let encoded = instruction.encode();
+        self.bytes.extend(encoded.get_bytes());
+        for r in encoded.get_refs() {
             let new_r = Reference { to: r.to.clone(), at: r.at + reloc_offset, rel: r.rel };
             self.references.push(new_r);
         }

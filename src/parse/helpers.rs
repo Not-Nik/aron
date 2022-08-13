@@ -4,28 +4,31 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-use crate::instructions::{Mod, Register};
+use crate::instructions::{Mod, Register, Size};
 use crate::parse::lexer::Token;
 use crate::parse::ParseError;
 use std::mem::size_of;
 use std::slice::Iter;
 use std::str::FromStr;
 
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Relativity {
     Absolute,
     Relative,
     RipRelative,
 }
 
+#[derive(Debug)]
 pub enum ImmediateType {
     Integer(i32),
     Reference(String),
 }
 
+#[derive(Debug)]
 pub struct Immediate {
     pub rel: Relativity,
     pub typ: ImmediateType,
+    pub size: Size,
 }
 
 use ImmediateType::*;
@@ -33,12 +36,12 @@ use Relativity::*;
 use crate::instructions::Register::Rip;
 
 impl Immediate {
-    pub fn integer(int: i32, rel: Relativity) -> Immediate {
-        Immediate { rel, typ: Integer(int) }
+    pub fn integer(int: i32, rel: Relativity, size: Size) -> Immediate {
+        Immediate { rel, typ: Integer(int), size }
     }
 
-    pub fn reference(to: String, rel: Relativity) -> Immediate {
-        Immediate { rel, typ: Reference(to) }
+    pub fn reference(to: String, rel: Relativity, size: Size) -> Immediate {
+        Immediate { rel, typ: Reference(to), size }
     }
 }
 
@@ -83,7 +86,7 @@ pub fn is_imm_of_size(iter: &mut Iter<Token>, size: usize) -> Result<Immediate, 
         let r = next.parse::<isize>();
 
         if r.is_err() {
-            return Ok(Immediate::reference(next.clone_string(), Absolute));
+            return Ok(Immediate::reference(next.clone_string(), Absolute, Size::try_from(size).unwrap()));
         }
 
         (1, r)
@@ -91,7 +94,7 @@ pub fn is_imm_of_size(iter: &mut Iter<Token>, size: usize) -> Result<Immediate, 
     let num = num.unwrap();
 
     if (size_of::<isize>() * 8 - num.leading_zeros() as usize) <= size - 1 {
-        Ok(Immediate::integer(num as i32 * neg, Absolute))
+        Ok(Immediate::integer(num as i32 * neg, Absolute, Size::try_from(size).unwrap()))
     } else {
         Err((iter.count(), ParseError::InvalidOperand))
     }
@@ -105,7 +108,7 @@ pub fn is_rel_of_size(iter: &mut Iter<Token>, size: usize) -> Result<Immediate, 
 
     let next = get_next(iter)?;
 
-    return Ok(Immediate::reference(next.clone_string(), Relative));
+    return Ok(Immediate::reference(next.clone_string(), Relative, Size::try_from(size).unwrap()));
 }
 
 const REGS_8_BIT: [&str; 20] = [
@@ -162,7 +165,7 @@ pub fn is_rm_of_size(
 }
 
 pub fn is_m_of_size(iter: &mut Iter<Token>,
-                    size: usize,
+                    mut size: usize,
 ) -> Result<(Register, Mod, Option<Immediate>), (usize, ParseError)> {
     let next = get_next(iter)?;
     if next != "[" {
@@ -171,17 +174,26 @@ pub fn is_m_of_size(iter: &mut Iter<Token>,
             16 => next != "word",
             32 => next != "dword",
             64 => next != "qword",
-            0 => ["bytes", "word", "dword", "qword"].contains(&next.as_str()),
+            0 => !["bytes", "word", "dword", "qword"].contains(&next.as_str()),
             _ => panic!("Invalid size"),
         } {
             return Err((iter.count(), ParseError::InvalidOperand));
         }
+
+        if size == 0 {
+            // fixme: hack
+            size = Size::try_from(next.clone_string()).unwrap() as usize;
+        }
+
         if get_next(iter)? != "ptr" {
             return Err((iter.count(), ParseError::InvalidOperand));
         }
         if get_next(iter)? != "[" {
             return Err((iter.count(), ParseError::InvalidOperand));
         }
+    } else {
+        // rip relative addressing
+        if size == 0 { size = 32 };
     };
     let reg_res = is_reg_of_size(iter, 0)?;
 
@@ -200,8 +212,8 @@ pub fn is_m_of_size(iter: &mut Iter<Token>,
         let neg = if next.as_str() == "-" { -1 } else { 1 };
         let off_res = is_imm_of_size(iter, 32)?;
         off = match off_res.typ {
-            Integer(i) => Some(Immediate::integer(i * neg, rel)),
-            Reference(s) => Some(Immediate::reference(s, rel)),
+            Integer(i) => Some(Immediate::integer(i * neg, rel, Size::try_from(size).unwrap())),
+            Reference(s) => Some(Immediate::reference(s, rel, Size::try_from(size).unwrap())),
         };
 
         if get_next(iter)? != "]" {

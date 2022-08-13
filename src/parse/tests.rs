@@ -34,13 +34,13 @@ mod tests {
 
         assert!(instr.is_ok());
         let instr = instr.unwrap();
-        assert_eq!(instr.get_bytes(), &vec![0x55u8]);
+        assert_eq!(instr.encode().get_bytes(), &vec![0x55u8]);
 
         let instr = matches(&vec![Token::new("rdseed"), Token::new("eax")]);
 
         assert!(instr.is_ok());
         let instr = instr.unwrap();
-        assert_eq!(instr.get_bytes(), &vec![0x0F, 0xC7, 0xF8]);
+        assert_eq!(instr.encode().get_bytes(), &vec![0x0F, 0xC7, 0xF8]);
     }
 }
 
