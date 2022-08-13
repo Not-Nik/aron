@@ -1,6 +1,8 @@
 // aron (c) Nikolas Wipper 2022
 
 use std::process::exit;
+use clap::{command, Arg, App, PossibleValue};
+
 use crate::ObjectFileType;
 
 #[derive(Default)]
@@ -22,65 +24,34 @@ fn help(argv1: String) -> ! {
     exit(0);
 }
 
-pub fn parse_command_line() -> CommandLine {
-    let mut args = std::env::args().collect::<Vec<String>>();
+pub fn get_app() -> App<'static> {
+    let arg_format = Arg::new("format")
+             .short('f')
+             .long("format")
+             .takes_value(true)
+             .value_name("FORMAT")
+             .help("Set the output binary format")
+             .value_parser([
+                PossibleValue::new("elf"),
+                PossibleValue::new("macho"),
+             ])
+             .default_value("elf");
 
-    if args.is_empty() {
-        panic!("Called aron with argc=0");
-    }
+    let arg_output = Arg::new("output file")
+        .short('o')
+        .long("output")
+        .takes_value(true)
+        .value_name("OUTPUT_FILE")
+        .help("The output filename")
+        .default_value("a.out");
 
-    let program_name = args.remove(0);
+    let arg_input_file = Arg::new("input file")
+        .takes_value(true)
+        .value_name("INPUT_FILE")
+        .required(true);
 
-    let mut cline = CommandLine::default();
-
-    while !args.is_empty() {
-        let arg = args.remove(0);
-        if arg == "--help" {
-            help(program_name);
-        } else if arg == "-f" {
-            if !args.is_empty() {
-                let format = args.remove(0);
-                cline.format = match &*format {
-                    "elf" => ObjectFileType::Elf,
-                    "macho" => ObjectFileType::MachO,
-                    _ => panic!("Invalid format string '{}'", format)
-                }
-            } else {
-                panic!("Used -f without specifying a format");
-            }
-        } else if arg == "-o" {
-            if !args.is_empty() {
-                if cline.output.is_empty() {
-                    cline.output = args.remove(0);
-                } else {
-                    panic!("Specified two output files");
-                }
-            } else {
-                panic!("Used -f without specifying a output");
-            }
-        } else {
-            if cline.input.is_empty() {
-                cline.input = arg;
-            } else {
-                panic!("Specified two input files");
-            }
-        }
-    }
-
-    if cline.input.is_empty() {
-        help(program_name);
-    }
-
-    if cline.output.is_empty() {
-        let last_period = cline.input.rfind('.');
-        cline.output = if let Some(last_period) = last_period {
-            let mut o = cline.input.clone();
-            o.replace_range(last_period.., ".o");
-            o
-        } else {
-            cline.input.clone() + ".o"
-        }
-    }
-
-    cline
+    command!()
+        .arg(arg_format)
+        .arg(arg_output)
+        .arg(arg_input_file)
 }
